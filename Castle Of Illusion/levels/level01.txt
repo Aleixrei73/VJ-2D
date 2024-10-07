@@ -1,0 +1,7 @@
+TILEMAP
+30 20 							-- Size of tile map in tiles
+32 32 							-- Tile size & block size
+images/Ground_Diffuse.jpg 	                        -- Tilesheet
+32 32 						        -- Number of tiles in tilesheet
+levels/Mapa.csv
+

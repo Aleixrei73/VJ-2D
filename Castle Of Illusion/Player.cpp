@@ -8,6 +8,7 @@
 #define JUMP_ANGLE_STEP 4
 #define JUMP_HEIGHT 96
 #define FALL_STEP 4
+#define MAX_VELOCITY 3
 
 
 enum PlayerAnims
@@ -42,6 +43,8 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+	acceleration = glm::vec2(0.2, -2);
+	velocity = glm::vec2(0, 0);
 	
 }
 
@@ -57,7 +60,10 @@ void Player::update(int deltaTime)
 	}
 
 	else if (Game::instance().getKey(GLFW_KEY_S) && action == GROUNDED) {
+
 		action = CROUCHING;
+
+		velocity.x = 0;
 
 		if (sprite->animation() == MOVE_LEFT) {
 			sprite->changeAnimation(STAND_LEFT);
@@ -70,6 +76,7 @@ void Player::update(int deltaTime)
 
 	else if (Game::instance().getKey(GLFW_KEY_S)) {
 		action = ATTACKING;
+		velocity.x = 0;
 
 	}
 
@@ -79,10 +86,14 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(MOVE_LEFT);
 		}
 
-		posPlayer.x -= 2;
+		velocity.x = velocity.x - acceleration.x;
+
+		if (velocity.x < -MAX_VELOCITY) velocity.x = -MAX_VELOCITY;
+
+		posPlayer.x += int(velocity.x);
 
 		if(map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32))) {
-			posPlayer.x += 2;
+			posPlayer.x -= int(velocity.x);
 			sprite->changeAnimation(STAND_LEFT);
 		}
 
@@ -94,16 +105,40 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(MOVE_RIGHT);
 		}
 
-		posPlayer.x += 2;
+		velocity.x = velocity.x + acceleration.x;
+
+		if (velocity.x > MAX_VELOCITY) velocity.x = MAX_VELOCITY;
+
+		posPlayer.x += int(velocity.x);
 
 		if(map->collisionMoveRight(posPlayer, glm::ivec2(32, 32))) {
-			posPlayer.x -= 2;
+			posPlayer.x -= int(velocity.x);
 			sprite->changeAnimation(STAND_RIGHT);
 		}
 
 	}
 
 	else {
+
+		if (velocity.x < 0) {
+			velocity.x = velocity.x + 0.1;
+			if (velocity.x > 0) velocity.x = 0;
+			posPlayer.x += int(velocity.x);
+			if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32))) {
+				posPlayer.x -= int(velocity.x);
+				sprite->changeAnimation(STAND_LEFT);
+			}
+		}
+		else if (velocity.x > 0) {
+			velocity.x = velocity.x - 0.1;
+			if (velocity.x < 0) velocity.x = 0;
+			posPlayer.x += int(velocity.x);
+			if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32))) {
+				posPlayer.x -= int(velocity.x);
+				sprite->changeAnimation(STAND_RIGHT);
+			}
+		}
+
 
 		if (sprite->animation() == MOVE_LEFT) {
 			sprite->changeAnimation(STAND_LEFT);

@@ -26,6 +26,7 @@ public:
 private:
 	PlayerAction action;
 	glm::ivec2 tileMapDispl, posPlayer;
+	glm::vec2 velocity, acceleration;
 	int jumpAngle, startY;
 	Texture spritesheet;
 	Sprite *sprite;

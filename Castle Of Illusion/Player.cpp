@@ -43,7 +43,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
-	acceleration = glm::vec2(0.2, -2);
+	acceleration = glm::vec2(0.2,0.2);
 	velocity = glm::vec2(0, 0);
 	
 }
@@ -54,7 +54,11 @@ void Player::update(int deltaTime)
 
 	if (action == ATTACKING) {
 
-		posPlayer.y += int(FALL_STEP*2);
+		velocity.y = velocity.y + acceleration.y * 5;
+
+		if (velocity.y > FALL_STEP * 2) velocity.y = FALL_STEP * 2;
+
+		posPlayer.y += int(velocity.y);
 
 		if (map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) action = GROUNDED;
 	}
@@ -77,6 +81,7 @@ void Player::update(int deltaTime)
 	else if (Game::instance().getKey(GLFW_KEY_S)) {
 		action = ATTACKING;
 		velocity.x = 0;
+		velocity.y = 0;
 
 	}
 
@@ -94,6 +99,7 @@ void Player::update(int deltaTime)
 
 		if(map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32))) {
 			posPlayer.x -= int(velocity.x);
+			velocity.x = 0;
 			sprite->changeAnimation(STAND_LEFT);
 		}
 
@@ -113,6 +119,7 @@ void Player::update(int deltaTime)
 
 		if(map->collisionMoveRight(posPlayer, glm::ivec2(32, 32))) {
 			posPlayer.x -= int(velocity.x);
+			velocity.x = 0;
 			sprite->changeAnimation(STAND_RIGHT);
 		}
 
@@ -126,6 +133,7 @@ void Player::update(int deltaTime)
 			posPlayer.x += int(velocity.x);
 			if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32))) {
 				posPlayer.x -= int(velocity.x);
+				velocity.x = 0;
 				sprite->changeAnimation(STAND_LEFT);
 			}
 		}
@@ -135,6 +143,7 @@ void Player::update(int deltaTime)
 			posPlayer.x += int(velocity.x);
 			if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32))) {
 				posPlayer.x -= int(velocity.x);
+				velocity.x = 0;
 				sprite->changeAnimation(STAND_RIGHT);
 			}
 		}

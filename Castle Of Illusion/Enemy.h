@@ -15,11 +15,14 @@ public:
 
 	void setTileMap(TileMap *tileMap);
 	void setPosition(const glm::vec2 &pos);
+	void setVelocity(int vel);
 
 private:
-	glm::ivec2 tileMapDispl, posPlayer;
+	glm::ivec2 tileMapDispl, posEnemy;
+	TileMap *map;
 	Texture spritesheet;
 	Sprite *sprite;
+	int velocity;
 };
 
 #endif

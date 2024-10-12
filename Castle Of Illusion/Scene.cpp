@@ -57,7 +57,7 @@ Direction Scene::checkCollision(Player *player, Enemy *enemy) {
 
 	if (playerBottomHitBox > posEnemy.y && posPlayer.y < enemyBottomHitBox) {
 
-		if (player->getAction() == PlayerAction::JUMPING || player->getAction() == PlayerAction::FALLING) {
+		if (player->getAction() == PlayerAction::FALLING) {
 			if ((playerRightBorder > posEnemy.x && playerRightBorder < enemyRightBorder) ||
 				(posPlayer.x < enemyRightBorder && posPlayer.x > posEnemy.x)) return UP;
 		}

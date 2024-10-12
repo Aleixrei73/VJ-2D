@@ -131,7 +131,7 @@ void Player::update(int deltaTime)
 	else {
 
 		if (velocity.x < 0) {
-			velocity.x = velocity.x + 0.1;
+			velocity.x = velocity.x + float(0.1);
 			if (velocity.x > 0) velocity.x = 0;
 			posPlayer.x += int(velocity.x);
 			if (map->collisionMoveLeft(posPlayer, hitBox)) {
@@ -141,7 +141,7 @@ void Player::update(int deltaTime)
 			}
 		}
 		else if (velocity.x > 0) {
-			velocity.x = velocity.x - 0.1;
+			velocity.x = velocity.x - float(0.1);
 			if (velocity.x < 0) velocity.x = 0;
 			posPlayer.x += int(velocity.x);
 			if (map->collisionMoveRight(posPlayer, hitBox)) {
@@ -164,20 +164,26 @@ void Player::update(int deltaTime)
 	
 	if(action == PlayerAction::JUMPING)
 	{
-		jumpAngle += JUMP_ANGLE_STEP;
+		velocity.y += acceleration.y*deltaTime/10;
 
-		if(jumpAngle == 180) {
+		posPlayer.y += int(velocity.y);
+
+		if (velocity.y > 0) {
 			action = PlayerAction::FALLING;
-			posPlayer.y = startY;
+			if (map->collisionMoveDown(posPlayer, hitBox, &posPlayer.y)) action = PlayerAction::GROUNDED;
 		}
 
-		else {
-			posPlayer.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
-			if (jumpAngle > 90) {
-				if (!map->collisionMoveDown(posPlayer, hitBox, &posPlayer.y)) action = PlayerAction::JUMPING;
-				else action = PlayerAction::GROUNDED;
-			}
-		}
+	}
+
+	else if (action == PlayerAction::FALLING) {
+		
+		velocity.y += acceleration.y*deltaTime/10;
+
+		if (velocity.y >= FALL_STEP) velocity.y = FALL_STEP;
+
+		posPlayer.y += int(velocity.y);
+
+		if (map->collisionMoveDown(posPlayer, hitBox, &posPlayer.y)) action = PlayerAction::GROUNDED;
 
 	}
 
@@ -192,8 +198,7 @@ void Player::update(int deltaTime)
 
 			if(Game::instance().getKey(GLFW_KEY_SPACE)) {
 				action = PlayerAction::JUMPING;
-				jumpAngle = 0;
-				startY = posPlayer.y;
+				velocity.y = -7;
 			}
 
 		}
@@ -230,8 +235,7 @@ void Player::setVerticalVelocity(const float & vel) {
 
 void Player::startJump(int angle) {
 	action = PlayerAction::JUMPING;
-	jumpAngle = 0;
-	startY = posPlayer.y;
+	velocity.y = -5;
 }
 
 glm::ivec2 Player::getHitBox()

@@ -17,8 +17,11 @@ public:
 	void setPosition(const glm::vec2 &pos);
 	void setVelocity(int vel);
 
+	glm::ivec2 getHitBox();
+	glm::ivec2 getPosition();
+
 private:
-	glm::ivec2 tileMapDispl, posEnemy;
+	glm::ivec2 tileMapDispl, posEnemy, hitBox;
 	TileMap *map;
 	Texture spritesheet;
 	Sprite *sprite;

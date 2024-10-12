@@ -19,7 +19,7 @@ enum PlayerAnims
 
 void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
-	action = GROUNDED;
+	action = PlayerAction::GROUNDED;
 	spritesheet.loadFromFile("images/bub.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.25, 0.25), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(4);
@@ -45,6 +45,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
 	acceleration = glm::vec2(0.2,0.2);
 	velocity = glm::vec2(0, 0);
+	hitBox = glm::ivec2(32, 32);
 	
 }
 
@@ -52,7 +53,9 @@ void Player::update(int deltaTime)
 {
 	sprite->update(deltaTime);
 
-	if (action == ATTACKING) {
+	hitBox.y = 32;
+
+	if (action == PlayerAction::ATTACKING) {
 
 		velocity.y = velocity.y + acceleration.y * 5;
 
@@ -60,12 +63,12 @@ void Player::update(int deltaTime)
 
 		posPlayer.y += int(velocity.y);
 
-		if (map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) action = GROUNDED;
+		if (map->collisionMoveDown(posPlayer, hitBox, &posPlayer.y)) action = PlayerAction::GROUNDED;
 	}
 
-	else if (Game::instance().getKey(GLFW_KEY_S) && action == GROUNDED) {
+	else if (Game::instance().getKey(GLFW_KEY_S) && action == PlayerAction::GROUNDED) {
 
-		action = CROUCHING;
+		hitBox.y = 16;
 
 		velocity.x = 0;
 
@@ -79,7 +82,7 @@ void Player::update(int deltaTime)
 	}
 
 	else if (Game::instance().getKey(GLFW_KEY_S)) {
-		action = ATTACKING;
+		action = PlayerAction::ATTACKING;
 		velocity.x = 0;
 		velocity.y = 0;
 
@@ -97,7 +100,7 @@ void Player::update(int deltaTime)
 
 		posPlayer.x += int(velocity.x);
 
-		if(map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32))) {
+		if(map->collisionMoveLeft(posPlayer, hitBox)) {
 			posPlayer.x -= int(velocity.x);
 			velocity.x = 0;
 			sprite->changeAnimation(STAND_LEFT);
@@ -117,7 +120,7 @@ void Player::update(int deltaTime)
 
 		posPlayer.x += int(velocity.x);
 
-		if(map->collisionMoveRight(posPlayer, glm::ivec2(32, 32))) {
+		if(map->collisionMoveRight(posPlayer, hitBox)) {
 			posPlayer.x -= int(velocity.x);
 			velocity.x = 0;
 			sprite->changeAnimation(STAND_RIGHT);
@@ -131,7 +134,7 @@ void Player::update(int deltaTime)
 			velocity.x = velocity.x + 0.1;
 			if (velocity.x > 0) velocity.x = 0;
 			posPlayer.x += int(velocity.x);
-			if (map->collisionMoveLeft(posPlayer, glm::ivec2(32, 32))) {
+			if (map->collisionMoveLeft(posPlayer, hitBox)) {
 				posPlayer.x -= int(velocity.x);
 				velocity.x = 0;
 				sprite->changeAnimation(STAND_LEFT);
@@ -141,7 +144,7 @@ void Player::update(int deltaTime)
 			velocity.x = velocity.x - 0.1;
 			if (velocity.x < 0) velocity.x = 0;
 			posPlayer.x += int(velocity.x);
-			if (map->collisionMoveRight(posPlayer, glm::ivec2(32, 32))) {
+			if (map->collisionMoveRight(posPlayer, hitBox)) {
 				posPlayer.x -= int(velocity.x);
 				velocity.x = 0;
 				sprite->changeAnimation(STAND_RIGHT);
@@ -159,36 +162,36 @@ void Player::update(int deltaTime)
 
 	}
 	
-	if(action == JUMPING)
+	if(action == PlayerAction::JUMPING)
 	{
 		jumpAngle += JUMP_ANGLE_STEP;
 
 		if(jumpAngle == 180) {
-			action = FALLING;
+			action = PlayerAction::FALLING;
 			posPlayer.y = startY;
 		}
 
 		else {
 			posPlayer.y = int(startY - 96 * sin(3.14159f * jumpAngle / 180.f));
 			if (jumpAngle > 90) {
-				if (!map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) action = JUMPING;
-				else action = GROUNDED;
+				if (!map->collisionMoveDown(posPlayer, hitBox, &posPlayer.y)) action = PlayerAction::JUMPING;
+				else action = PlayerAction::GROUNDED;
 			}
 		}
 
 	}
 
-	else if (action != ATTACKING){
+	else if (action != PlayerAction::ATTACKING){
 
 		posPlayer.y += FALL_STEP;
 
-		if (!map->collisionMoveDown(posPlayer, glm::ivec2(32, 32), &posPlayer.y)) action = FALLING;
-		else action = GROUNDED;
+		if (!map->collisionMoveDown(posPlayer, hitBox, &posPlayer.y)) action = PlayerAction::FALLING;
+		else action = PlayerAction::GROUNDED;
 
-		if(action==GROUNDED) {
+		if(action== PlayerAction::GROUNDED) {
 
 			if(Game::instance().getKey(GLFW_KEY_SPACE)) {
-				action = JUMPING;
+				action = PlayerAction::JUMPING;
 				jumpAngle = 0;
 				startY = posPlayer.y;
 			}
@@ -215,6 +218,35 @@ void Player::setPosition(const glm::vec2 &pos)
 {
 	posPlayer = pos;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+}
+
+void Player::setHorizontalVelocity(float vel) {
+	velocity.x = vel;
+}
+
+void Player::setVerticalVelocity(const float & vel) {
+	velocity.y = vel;
+}
+
+void Player::startJump(int angle) {
+	action = PlayerAction::JUMPING;
+	jumpAngle = 0;
+	startY = posPlayer.y;
+}
+
+glm::ivec2 Player::getHitBox()
+{
+	return hitBox;
+}
+
+glm::ivec2 Player::getPosition()
+{
+	return posPlayer;
+}
+
+PlayerAction Player::getAction()
+{
+	return action;
 }
 
 

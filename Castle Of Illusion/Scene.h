@@ -12,6 +12,8 @@
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
 
+enum Direction { LEFT, RIGHT, UP, NONE };
+
 
 class Scene
 {
@@ -26,6 +28,8 @@ public:
 
 private:
 	void initShaders();
+	void updateInteractions(Player * player, Enemy * enemy);
+	Direction checkCollision(Player * player, Enemy * enemy);
 
 private:
 	TileMap *map;

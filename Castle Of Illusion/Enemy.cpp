@@ -31,6 +31,7 @@ void Enemy::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram) {
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;
 	velocity = 0;
+	hitBox = glm::ivec2(32, 32);
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posEnemy.x), float(tileMapDispl.y + posEnemy.y)));
 
 }
@@ -43,9 +44,12 @@ void Enemy::update(int deltaTime) {
 
 	if (velocity > 0) {
 
-		if (map->collisionMoveRight(posEnemy, glm::ivec2(32, 32))) {
+		if (sprite->animation() != MOVE_RIGHT) {
+			sprite->changeAnimation(MOVE_RIGHT);
+		}
+
+		if (map->collisionMoveRight(posEnemy, hitBox)) {
 			posEnemy.x -= velocity;
-			sprite->changeAnimation(MOVE_LEFT);
 			velocity = velocity * -1;
 		}
 
@@ -53,9 +57,12 @@ void Enemy::update(int deltaTime) {
 
 	else if (velocity < 0) {
 
-		if (map->collisionMoveLeft(posEnemy, glm::ivec2(32, 32))) {
+		if (sprite->animation() != MOVE_LEFT) {
+			sprite->changeAnimation(MOVE_LEFT);
+		}
+
+		if (map->collisionMoveLeft(posEnemy, hitBox)) {
 			posEnemy.x -= velocity;
-			sprite->changeAnimation(MOVE_RIGHT);
 			velocity = velocity * -1;
 		}
 	}
@@ -81,6 +88,15 @@ void Enemy::setPosition(const glm::vec2 & pos) {
 
 void Enemy::setVelocity(int vel) {
 	velocity = vel;
+}
+
+glm::ivec2 Enemy::getHitBox() {
+	return hitBox;
+}
+
+glm::ivec2 Enemy::getPosition()
+{
+	return posEnemy;
 }
 
 

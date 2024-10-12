@@ -9,7 +9,7 @@
 // Player is basically a Sprite that represents the player. As such it has
 // all properties it needs to track its movement, jumping, and collisions.
 
-enum PlayerAction { JUMPING, GROUNDED, FALLING, ATTACKING, CROUCHING};
+enum class PlayerAction { JUMPING, GROUNDED, FALLING, ATTACKING, CROUCHING};
 
 
 class Player
@@ -22,10 +22,17 @@ public:
 	
 	void setTileMap(TileMap *tileMap);
 	void setPosition(const glm::vec2 &pos);
+	void setHorizontalVelocity(float vel);
+	void setVerticalVelocity(const float &vel);
+	void startJump(int angle);
+
+	glm::ivec2 getHitBox();
+	glm::ivec2 getPosition();
+	PlayerAction getAction();
 	
 private:
 	PlayerAction action;
-	glm::ivec2 tileMapDispl, posPlayer;
+	glm::ivec2 tileMapDispl, posPlayer, hitBox;
 	glm::vec2 velocity, acceleration;
 	int jumpAngle, startY;
 	Texture spritesheet;

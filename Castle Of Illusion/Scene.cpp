@@ -44,11 +44,68 @@ void Scene::init()
 	currentTime = 0.0f;
 }
 
+Direction Scene::checkCollision(Player *player, Enemy *enemy) {
+	glm::ivec2 posPlayer = player->getPosition();
+	glm::ivec2 hitBoxPlayer = player->getHitBox();
+	glm::ivec2 posEnemy = enemy->getPosition();
+	glm::ivec2 hitBoxEnemy = enemy->getHitBox();
+
+	int playerBottomHitBox = posPlayer.y + hitBoxPlayer.y;
+	int enemyBottomHitBox = posEnemy.y + hitBoxEnemy.y;
+	int playerRightBorder = posPlayer.x + hitBoxPlayer.x;
+	int enemyRightBorder = posEnemy.x + hitBoxEnemy.x;
+
+	if (playerBottomHitBox > posEnemy.y && posPlayer.y < enemyBottomHitBox) {
+
+		if (player->getAction() == PlayerAction::JUMPING || player->getAction() == PlayerAction::FALLING) {
+			if ((playerRightBorder > posEnemy.x && playerRightBorder < enemyRightBorder) ||
+				(posPlayer.x < enemyRightBorder && posPlayer.x > posEnemy.x)) return UP;
+		}
+
+		if (playerRightBorder > posEnemy.x && playerRightBorder < enemyRightBorder) return LEFT;
+
+		if (posPlayer.x < enemyRightBorder && posPlayer.x > posEnemy.x) return RIGHT;
+
+		return NONE;
+	}
+
+	return NONE;
+}
+
+void Scene::updateInteractions(Player *player, Enemy *enemy) {
+	if (player->getAction() != PlayerAction::ATTACKING) {
+		Direction dir = checkCollision(player, enemy);
+
+		if (dir == NONE) return;
+
+		if (dir == LEFT) {
+			player->setHorizontalVelocity(-5);
+			glm::ivec2 hitPosition = glm::ivec2(enemy->getPosition().x, player->getPosition().y) - glm::ivec2(player->getHitBox().x, 0);
+			player->setPosition(hitPosition);
+			return;
+		}
+
+		if (dir == RIGHT) {
+			player->setHorizontalVelocity(5);
+			glm::ivec2 hitPosition = glm::ivec2(enemy->getPosition().x, player->getPosition().y) + glm::ivec2(enemy->getHitBox().x,0);
+			player->setPosition(hitPosition);
+			return;
+		}
+
+		if (dir == UP) {
+			player->startJump(0);
+			return;
+		}
+
+	}
+}
+
 void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
 	player->update(deltaTime);
 	enemy->update(deltaTime);
+	updateInteractions(player, enemy);
 }
 
 void Scene::render()

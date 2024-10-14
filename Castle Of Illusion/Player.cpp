@@ -7,7 +7,7 @@
 
 #define JUMP_ANGLE_STEP 4
 #define JUMP_HEIGHT 96
-#define FALL_STEP 4
+#define MAX_FALL_VELOCITY 7
 #define MAX_VELOCITY 3
 
 
@@ -59,7 +59,7 @@ void Player::update(int deltaTime)
 
 		velocity.y = velocity.y + acceleration.y * 5;
 
-		if (velocity.y > FALL_STEP * 2) velocity.y = FALL_STEP * 2;
+		if (velocity.y > MAX_FALL_VELOCITY * 2) velocity.y = MAX_FALL_VELOCITY * 2;
 
 		position.y += int(velocity.y);
 
@@ -179,7 +179,7 @@ void Player::update(int deltaTime)
 		
 		velocity.y += acceleration.y*deltaTime/10;
 
-		if (velocity.y >= FALL_STEP) velocity.y = FALL_STEP;
+		if (velocity.y >= MAX_FALL_VELOCITY) velocity.y = MAX_FALL_VELOCITY;
 
 		position.y += int(velocity.y);
 
@@ -189,16 +189,16 @@ void Player::update(int deltaTime)
 
 	else if (action != PlayerAction::ATTACKING){
 
-		position.y += FALL_STEP;
+		position.y += 1;
 
-		if (!map->collisionMoveDown(position, hitBox, &position.y)) action = PlayerAction::FALLING;
+ 		if (!map->collisionMoveDown(position, hitBox, &position.y)) action = PlayerAction::FALLING;
 		else action = PlayerAction::GROUNDED;
 
-		if(action== PlayerAction::GROUNDED) {
-
+		if(action == PlayerAction::GROUNDED) {
+			 
 			if(Game::instance().getKey(GLFW_KEY_SPACE)) {
 				action = PlayerAction::JUMPING;
-				velocity.y = -7;
+				velocity.y = -MAX_FALL_VELOCITY;
 			}
 
 		}

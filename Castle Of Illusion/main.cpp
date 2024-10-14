@@ -81,7 +81,7 @@ int main(void)
 
 		/* Poll for and process events */
 		glfwPollEvents();
-	}
+   	}
 
 	glfwTerminate();
 	return 0;

@@ -42,7 +42,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 		
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;
-	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+	sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
 	acceleration = glm::vec2(0.2,0.2);
 	velocity = glm::vec2(0, 0);
 	hitBox = glm::ivec2(32, 32);
@@ -61,9 +61,9 @@ void Player::update(int deltaTime)
 
 		if (velocity.y > FALL_STEP * 2) velocity.y = FALL_STEP * 2;
 
-		posPlayer.y += int(velocity.y);
+		position.y += int(velocity.y);
 
-		if (map->collisionMoveDown(posPlayer, hitBox, &posPlayer.y)) action = PlayerAction::GROUNDED;
+		if (map->collisionMoveDown(position, hitBox, &position.y)) action = PlayerAction::GROUNDED;
 	}
 
 	else if (Game::instance().getKey(GLFW_KEY_S) && action == PlayerAction::GROUNDED) {
@@ -98,10 +98,10 @@ void Player::update(int deltaTime)
 
 		if (velocity.x < -MAX_VELOCITY) velocity.x = -MAX_VELOCITY;
 
-		posPlayer.x += int(velocity.x);
+		position.x += int(velocity.x);
 
-		if(map->collisionMoveLeft(posPlayer, hitBox)) {
-			posPlayer.x -= int(velocity.x);
+		if(map->collisionMoveLeft(position, hitBox)) {
+			position.x -= int(velocity.x);
 			velocity.x = 0;
 			sprite->changeAnimation(STAND_LEFT);
 		}
@@ -118,10 +118,10 @@ void Player::update(int deltaTime)
 
 		if (velocity.x > MAX_VELOCITY) velocity.x = MAX_VELOCITY;
 
-		posPlayer.x += int(velocity.x);
+		position.x += int(velocity.x);
 
-		if(map->collisionMoveRight(posPlayer, hitBox)) {
-			posPlayer.x -= int(velocity.x);
+		if(map->collisionMoveRight(position, hitBox)) {
+			position.x -= int(velocity.x);
 			velocity.x = 0;
 			sprite->changeAnimation(STAND_RIGHT);
 		}
@@ -133,9 +133,9 @@ void Player::update(int deltaTime)
 		if (velocity.x < 0) {
 			velocity.x = velocity.x + float(0.1);
 			if (velocity.x > 0) velocity.x = 0;
-			posPlayer.x += int(velocity.x);
-			if (map->collisionMoveLeft(posPlayer, hitBox)) {
-				posPlayer.x -= int(velocity.x);
+			position.x += int(velocity.x);
+			if (map->collisionMoveLeft(position, hitBox)) {
+				position.x -= int(velocity.x);
 				velocity.x = 0;
 				sprite->changeAnimation(STAND_LEFT);
 			}
@@ -143,9 +143,9 @@ void Player::update(int deltaTime)
 		else if (velocity.x > 0) {
 			velocity.x = velocity.x - float(0.1);
 			if (velocity.x < 0) velocity.x = 0;
-			posPlayer.x += int(velocity.x);
-			if (map->collisionMoveRight(posPlayer, hitBox)) {
-				posPlayer.x -= int(velocity.x);
+			position.x += int(velocity.x);
+			if (map->collisionMoveRight(position, hitBox)) {
+				position.x -= int(velocity.x);
 				velocity.x = 0;
 				sprite->changeAnimation(STAND_RIGHT);
 			}
@@ -166,11 +166,11 @@ void Player::update(int deltaTime)
 	{
 		velocity.y += acceleration.y*deltaTime/10;
 
-		posPlayer.y += int(velocity.y);
+		position.y += int(velocity.y);
 
 		if (velocity.y > 0) {
 			action = PlayerAction::FALLING;
-			if (map->collisionMoveDown(posPlayer, hitBox, &posPlayer.y)) action = PlayerAction::GROUNDED;
+			if (map->collisionMoveDown(position, hitBox, &position.y)) action = PlayerAction::GROUNDED;
 		}
 
 	}
@@ -181,17 +181,17 @@ void Player::update(int deltaTime)
 
 		if (velocity.y >= FALL_STEP) velocity.y = FALL_STEP;
 
-		posPlayer.y += int(velocity.y);
+		position.y += int(velocity.y);
 
-		if (map->collisionMoveDown(posPlayer, hitBox, &posPlayer.y)) action = PlayerAction::GROUNDED;
+		if (map->collisionMoveDown(position, hitBox, &position.y)) action = PlayerAction::GROUNDED;
 
 	}
 
 	else if (action != PlayerAction::ATTACKING){
 
-		posPlayer.y += FALL_STEP;
+		position.y += FALL_STEP;
 
-		if (!map->collisionMoveDown(posPlayer, hitBox, &posPlayer.y)) action = PlayerAction::FALLING;
+		if (!map->collisionMoveDown(position, hitBox, &position.y)) action = PlayerAction::FALLING;
 		else action = PlayerAction::GROUNDED;
 
 		if(action== PlayerAction::GROUNDED) {
@@ -205,7 +205,7 @@ void Player::update(int deltaTime)
 
 	}
 	
-	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
+	sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
 
 }
 
@@ -214,38 +214,9 @@ void Player::render()
 	sprite->render();
 }
 
-void Player::setTileMap(TileMap *tileMap)
-{
-	map = tileMap;
-}
-
-void Player::setPosition(const glm::vec2 &pos)
-{
-	posPlayer = pos;
-	sprite->setPosition(glm::vec2(float(tileMapDispl.x + posPlayer.x), float(tileMapDispl.y + posPlayer.y)));
-}
-
-void Player::setHorizontalVelocity(float vel) {
-	velocity.x = vel;
-}
-
-void Player::setVerticalVelocity(const float & vel) {
-	velocity.y = vel;
-}
-
-void Player::startJump(int angle) {
+void Player::setJump(int vel) {
 	action = PlayerAction::JUMPING;
-	velocity.y = -5;
-}
-
-glm::ivec2 Player::getHitBox()
-{
-	return hitBox;
-}
-
-glm::ivec2 Player::getPosition()
-{
-	return posPlayer;
+	velocity.y = vel;
 }
 
 PlayerAction Player::getAction()

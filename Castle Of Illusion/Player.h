@@ -1,9 +1,7 @@
 #ifndef _PLAYER_INCLUDE
 #define _PLAYER_INCLUDE
 
-
-#include "Sprite.h"
-#include "TileMap.h"
+#include "Entity.h"
 
 
 // Player is basically a Sprite that represents the player. As such it has
@@ -12,7 +10,7 @@
 enum class PlayerAction { JUMPING, GROUNDED, FALLING, ATTACKING, CROUCHING};
 
 
-class Player
+class Player : public Entity
 {
 
 public:
@@ -20,24 +18,12 @@ public:
 	void update(int deltaTime);
 	void render();
 	
-	void setTileMap(TileMap *tileMap);
-	void setPosition(const glm::vec2 &pos);
-	void setHorizontalVelocity(float vel);
-	void setVerticalVelocity(const float &vel);
-	void startJump(int angle);
+	void setJump(int vel);
 
-	glm::ivec2 getHitBox();
-	glm::ivec2 getPosition();
 	PlayerAction getAction();
 	
 private:
 	PlayerAction action;
-	glm::ivec2 tileMapDispl, posPlayer, hitBox;
-	glm::vec2 velocity, acceleration;
-	int jumpAngle, startY;
-	Texture spritesheet;
-	Sprite *sprite;
-	TileMap *map;
 
 };
 

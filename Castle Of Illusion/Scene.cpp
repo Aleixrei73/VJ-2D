@@ -24,6 +24,8 @@ Scene::~Scene()
 		delete map;
 	if(player != NULL)
 		delete player;
+	if (enemy != NULL)
+		delete enemy;
 }
 
 
@@ -39,7 +41,7 @@ void Scene::init()
 	enemy->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	enemy->setPosition(glm::vec2(45 * map->getTileSize(), 29 * map->getTileSize()));
 	enemy->setTileMap(map);
-	enemy->setVelocity(1);
+	enemy->setHorizontalVelocity(1);
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	currentTime = 0.0f;
 }
@@ -93,10 +95,9 @@ void Scene::updateInteractions(Player *player, Enemy *enemy) {
 		}
 
 		if (dir == UP) {
-			player->startJump(0);
+			player->setJump(-5);
 			return;
 		}
-
 	}
 }
 

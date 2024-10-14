@@ -39,7 +39,7 @@ void Scene::init()
 	player->setTileMap(map);
 	enemy = new Enemy();
 	enemy->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	enemy->setPosition(glm::vec2(45 * map->getTileSize(), 29 * map->getTileSize()));
+	enemy->setPosition(glm::vec2(45 * map->getTileSize(), 32 * map->getTileSize()));
 	enemy->setTileMap(map);
 	enemy->setHorizontalVelocity(1);
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
@@ -52,14 +52,14 @@ Direction Scene::checkCollision(Player *player, Enemy *enemy) {
 	glm::ivec2 posEnemy = enemy->getPosition();
 	glm::ivec2 hitBoxEnemy = enemy->getHitBox();
 
-	int playerBottomHitBox = posPlayer.y + hitBoxPlayer.y;
-	int enemyBottomHitBox = posEnemy.y + hitBoxEnemy.y;
+	int playerTopHitBox = posPlayer.y - hitBoxPlayer.y;
+	int enemyTopHitBox = posEnemy.y - hitBoxEnemy.y;
 	int playerRightBorder = posPlayer.x + hitBoxPlayer.x;
 	int enemyRightBorder = posEnemy.x + hitBoxEnemy.x;
 
-	if (playerBottomHitBox > posEnemy.y && posPlayer.y < enemyBottomHitBox) {
+	if (posPlayer.y > enemyTopHitBox && playerTopHitBox < posEnemy.y) {
 
-		if (player->getAction() == PlayerAction::FALLING) {
+		if (player->getAction() == PlayerAction::FALLING && posPlayer.y < (enemyTopHitBox + hitBoxEnemy.y*0.50)) {
 			if ((playerRightBorder > posEnemy.x && playerRightBorder < enemyRightBorder) ||
 				(posPlayer.x < enemyRightBorder && posPlayer.x > posEnemy.x)) return UP;
 		}

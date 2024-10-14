@@ -215,7 +215,7 @@ void Player::render()
 }
 
 void Player::setJump(int vel) {
-	action = PlayerAction::JUMPING;
+	action = PlayerAction::FALLING;
 	velocity.y = vel;
 }
 

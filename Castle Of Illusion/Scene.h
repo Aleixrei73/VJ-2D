@@ -7,6 +7,7 @@
 #include "TileMap.h"
 #include "Player.h"
 #include "Enemy.h"
+#include "Barrel.h"
 
 
 // Scene contains all the entities of our game.
@@ -29,12 +30,15 @@ public:
 private:
 	void initShaders();
 	void updateInteractions(Player * player, Enemy * enemy);
-	Direction checkCollision(Player * player, Enemy * enemy);
+	void updateInteractions(Player * player, Barrel * barrel);
+	Direction checkCollisionDirection(Player * player, Enemy * enemy);
+	bool isCollision(Entity *a, Entity *b);
 
 private:
 	TileMap *map;
 	Player *player;
 	Enemy *enemy;
+	Barrel *barrel;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;

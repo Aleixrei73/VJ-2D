@@ -42,11 +42,15 @@ void Scene::init()
 	enemy->setPosition(glm::vec2(45 * map->getTileSize(), 32 * map->getTileSize()));
 	enemy->setTileMap(map);
 	enemy->setHorizontalVelocity(1);
+	barrel = new Barrel();
+	barrel->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
+	barrel->setPosition(glm::vec2(30 * map->getTileSize(), 32 * map->getTileSize()));
+	barrel->setTileMap(map);
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	currentTime = 0.0f;
 }
 
-Direction Scene::checkCollision(Player *player, Enemy *enemy) {
+Direction Scene::checkCollisionDirection(Player *player, Enemy *enemy) {
 	glm::ivec2 posPlayer = player->getPosition();
 	glm::ivec2 hitBoxPlayer = player->getHitBox();
 	glm::ivec2 posEnemy = enemy->getPosition();
@@ -74,9 +78,31 @@ Direction Scene::checkCollision(Player *player, Enemy *enemy) {
 	return NONE;
 }
 
+bool Scene::isCollision(Entity * a, Entity * b)
+{
+	glm::ivec2 posA = a->getPosition();
+	glm::ivec2 hitBoxA = a->getHitBox();
+	glm::ivec2 posB = b->getPosition();
+	glm::ivec2 hitBoxB = b->getHitBox();
+
+	int aTopHitBox = posA.y - hitBoxA.y;
+	int bTopHitBox = posB.y - hitBoxB.y;
+	int aRightBorder = posA.x + hitBoxA.x;
+	int bRightBorder = posB.x + hitBoxB.x;
+
+	if (posA.y > bTopHitBox && aTopHitBox < posB.y) {
+		if ((aRightBorder > posB.x && aRightBorder < bRightBorder) ||
+			(posA.x < bRightBorder && posA.x > posB.x)) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void Scene::updateInteractions(Player *player, Enemy *enemy) {
 	if (player->getAction() != PlayerAction::ATTACKING) {
-		Direction dir = checkCollision(player, enemy);
+		Direction dir = checkCollisionDirection(player, enemy);
 
 		if (dir == NONE) return;
 
@@ -101,12 +127,34 @@ void Scene::updateInteractions(Player *player, Enemy *enemy) {
 	}
 }
 
+void Scene::updateInteractions(Player * player, Barrel * barrel) {
+
+	if (Game::instance().getKey(GLFW_KEY_V)) {
+		if (barrel->getState() == PICKED) {
+			barrel->setState(THROWED);
+			glm::vec2 newVelocity = glm::vec2(player->getVelocity().x * 3, player->getVelocity().y - 7);
+			barrel->setVelocity(newVelocity);
+		}
+		else if (isCollision(player, barrel)) {
+			barrel->setState(PICKED);
+			barrel->setVelocity(glm::vec2(0, 0));
+		}
+	}
+
+	else if (barrel->getState() == PICKED) {
+		glm::ivec2 newPosition = glm::ivec2(player->getPosition().x, player->getPosition().y - player->getHitBox().y);
+		barrel->setPosition(newPosition);
+	}
+}
+
 void Scene::update(int deltaTime)
 {
 	currentTime += deltaTime;
 	player->update(deltaTime);
 	enemy->update(deltaTime);
+	barrel->update(deltaTime);
 	updateInteractions(player, enemy);
+	updateInteractions(player, barrel);
 }
 
 void Scene::render()
@@ -122,6 +170,7 @@ void Scene::render()
 	map->render();
 	player->render();
 	enemy->render();
+	barrel->render();
 }
 
 void Scene::initShaders()

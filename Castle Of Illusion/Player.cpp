@@ -59,7 +59,7 @@ void Player::update(int deltaTime)
 
 		velocity.y = velocity.y + acceleration.y * 5;
 
-		if (velocity.y > MAX_FALL_VELOCITY * 2) velocity.y = MAX_FALL_VELOCITY * 2;
+		if (velocity.y > (MAX_FALL_VELOCITY + 3)) velocity.y = MAX_FALL_VELOCITY + 3;
 
 		position.y += int(velocity.y);
 

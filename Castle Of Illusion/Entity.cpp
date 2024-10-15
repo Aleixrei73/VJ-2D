@@ -43,12 +43,12 @@ glm::ivec2 Entity::getPosition() const
 	return position;
 }
 
-glm::ivec2 Entity::getVelocity() const
+glm::vec2 Entity::getVelocity() const
 {
 	return velocity;
 }
 
-glm::ivec2 Entity::getAcceleration() const
+glm::vec2 Entity::getAcceleration() const
 {
 	return glm::ivec2();
 }

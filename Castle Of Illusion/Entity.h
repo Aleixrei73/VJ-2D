@@ -16,8 +16,8 @@ public:
 
 	glm::ivec2 getHitBox() const;
 	glm::ivec2 getPosition() const;
-	glm::ivec2 getVelocity() const;
-	glm::ivec2 getAcceleration() const;
+	glm::vec2 getVelocity() const;
+	glm::vec2 getAcceleration() const;
 
 protected:
 	glm::ivec2 tileMapDispl, position, hitBox;

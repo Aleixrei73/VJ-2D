@@ -30,8 +30,7 @@ void Game::keyPressed(int key)
 	keys[key] = true;
 }
 
-void Game::keyReleased(int key)
-{
+void Game::keyReleased(int key) {
 	keys[key] = false;
 }
 

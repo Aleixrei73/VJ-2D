@@ -219,6 +219,14 @@ void Player::setJump(int vel) {
 	velocity.y = vel;
 }
 
+void Player::setPicking(bool pick) {
+	picking = pick;
+}
+
+bool Player::isPicking() {
+	return picking;
+}
+
 PlayerAction Player::getAction()
 {
 	return action;

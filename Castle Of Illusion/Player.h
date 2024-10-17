@@ -19,11 +19,14 @@ public:
 	void render();
 	
 	void setJump(int vel);
+	void setPicking(bool pick);
+	bool isPicking();
 
 	PlayerAction getAction();
 	
 private:
 	PlayerAction action;
+	bool picking;
 
 };
 

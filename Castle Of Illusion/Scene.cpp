@@ -48,7 +48,7 @@ void Scene::init()
 	barrel->setTileMap(map);
 	chest = new Chest();
 	chest->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	chest->setPosition(glm::vec2(34 * map->getTileSize(), 32 * map->getTileSize()));
+	chest->setPosition(glm::vec2(25 * map->getTileSize(), 35 * map->getTileSize()));
 	chest->setTileMap(map);
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	currentTime = 0.0f;
@@ -133,16 +133,20 @@ void Scene::updateInteractions(Player *player, Enemy *enemy) {
 
 void Scene::updateInteractions(Player * player, Barrel * barrel) {
 
-	if (Game::instance().getKey(GLFW_KEY_V)) {
+	if (!interacting && Game::instance().getKey(GLFW_KEY_V)) {
+		interacting = true;
 		if (barrel->getState() == PICKED) {
 			barrel->setState(THROWED);
 			glm::vec2 newVelocity = glm::vec2(player->getVelocity().x * 3, player->getVelocity().y - 7);
 			barrel->setVelocity(newVelocity);
+			player->setPicking(false);
 		}
-		else if (isCollision(player, barrel)) {
+		else if (isCollision(player, barrel) && !player->isPicking()) {
 			barrel->setState(PICKED);
 			barrel->setVelocity(glm::vec2(0, 0));
+			player->setPicking(true);
 		}
+
 	}
 
 	else if (barrel->getState() == PICKED) {
@@ -153,7 +157,8 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 
 void Scene::updateInteractions(Player * player, Chest * chest) {
 
-	if (Game::instance().getKey(GLFW_KEY_V) && !chest->isOpened()) {
+	if (!interacting && Game::instance().getKey(GLFW_KEY_V) && !chest->isOpened()) {
+		interacting = true;
 		if (isCollision(player, chest)) {
 			chest->open();
 		}
@@ -162,6 +167,7 @@ void Scene::updateInteractions(Player * player, Chest * chest) {
 
 void Scene::update(int deltaTime) {
 	currentTime += deltaTime;
+	if (interacting) interacting = Game::instance().getKey(GLFW_KEY_V);
 	player->update(deltaTime);
 	enemy->update(deltaTime);
 	barrel->update(deltaTime);

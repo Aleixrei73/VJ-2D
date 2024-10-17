@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "Enemy.h"
 #include "Barrel.h"
+#include "Chest.h"
 
 
 // Scene contains all the entities of our game.
@@ -31,6 +32,7 @@ private:
 	void initShaders();
 	void updateInteractions(Player * player, Enemy * enemy);
 	void updateInteractions(Player * player, Barrel * barrel);
+	void updateInteractions(Player * player, Chest * chest);
 	Direction checkCollisionDirection(Player * player, Enemy * enemy);
 	bool isCollision(Entity *a, Entity *b);
 
@@ -39,6 +41,7 @@ private:
 	Player *player;
 	Enemy *enemy;
 	Barrel *barrel;
+	Chest *chest;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;

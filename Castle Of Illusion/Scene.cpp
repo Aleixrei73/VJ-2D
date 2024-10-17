@@ -46,6 +46,10 @@ void Scene::init()
 	barrel->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
 	barrel->setPosition(glm::vec2(30 * map->getTileSize(), 32 * map->getTileSize()));
 	barrel->setTileMap(map);
+	chest = new Chest();
+	chest->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	chest->setPosition(glm::vec2(34 * map->getTileSize(), 32 * map->getTileSize()));
+	chest->setTileMap(map);
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	currentTime = 0.0f;
 }
@@ -147,14 +151,23 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 	}
 }
 
-void Scene::update(int deltaTime)
-{
+void Scene::updateInteractions(Player * player, Chest * chest) {
+
+	if (Game::instance().getKey(GLFW_KEY_V) && !chest->isOpened()) {
+		if (isCollision(player, chest)) {
+			chest->open();
+		}
+	}
+}
+
+void Scene::update(int deltaTime) {
 	currentTime += deltaTime;
 	player->update(deltaTime);
 	enemy->update(deltaTime);
 	barrel->update(deltaTime);
 	updateInteractions(player, enemy);
 	updateInteractions(player, barrel);
+	updateInteractions(player, chest);
 }
 
 void Scene::render()
@@ -171,6 +184,7 @@ void Scene::render()
 	player->render();
 	enemy->render();
 	barrel->render();
+	chest->render();
 }
 
 void Scene::initShaders()

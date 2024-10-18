@@ -39,7 +39,7 @@ private:
 private:
 	TileMap *map;
 	Player *player;
-	Enemy *enemy;
+	vector<Enemy*> enemies;
 	Barrel *barrel;
 	Chest *chest;
 	vector<Consumable *> items;

@@ -24,8 +24,6 @@ Scene::~Scene()
 		delete map;
 	if(player != NULL)
 		delete player;
-	if (enemy != NULL)
-		delete enemy;
 }
 
 
@@ -37,11 +35,14 @@ void Scene::init()
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	player->setTileMap(map);
-	enemy = new Enemy();
+
+	Enemy *enemy = new Enemy();
 	enemy->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	enemy->setPosition(glm::vec2(45 * map->getTileSize(), 32 * map->getTileSize()));
 	enemy->setTileMap(map);
 	enemy->setHorizontalVelocity(1);
+	enemies.push_back(enemy);
+
 	barrel = new Barrel();
 	barrel->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
 	barrel->setPosition(glm::vec2(30 * map->getTileSize(), 32 * map->getTileSize()));
@@ -83,10 +84,11 @@ Direction Scene::isCollision(Entity *player, Entity *enemy) {
 }
 
 void Scene::updateInteractions(Player *player, Enemy *enemy) {
-	if (player->getAction() != PlayerAction::ATTACKING) {
-		Direction dir = isCollision(player, enemy);
+	Direction dir = isCollision(player, enemy);
 
-		if (dir == NONE) return;
+	if (dir == NONE) return;
+
+	if (player->getAction() != PlayerAction::ATTACKING || dir != UP) {
 
 		if (dir == LEFT) {
 			player->setHorizontalVelocity(-5);
@@ -109,6 +111,11 @@ void Scene::updateInteractions(Player *player, Enemy *enemy) {
 			return;
 		}
 	}
+
+	glm::ivec2 hitPosition = glm::ivec2(player->getPosition().x, enemy->getPosition().y) - glm::ivec2(0, enemy->getHitBox().y);
+	player->setPosition(hitPosition);
+	player->setJump(-5);
+	enemy->die();
 }
 
 void Scene::updateInteractions(Player * player, Barrel * barrel) {
@@ -156,14 +163,29 @@ void Scene::update(int deltaTime) {
 	currentTime += deltaTime;
 	if (interacting) interacting = Game::instance().getKey(GLFW_KEY_V);
 	player->update(deltaTime);
-	enemy->update(deltaTime);
+
+	for (Enemy* enemy : enemies) {
+		enemy->update(deltaTime);
+	}
+
 	barrel->update(deltaTime);
 	for (Consumable* item : items) {
 		item->update(deltaTime);
 	}
-	updateInteractions(player, enemy);
+	for (Enemy* enemy : enemies) {
+		if (!enemy->isDying()) updateInteractions(player, enemy);
+	}
+
+	
 	updateInteractions(player, barrel);
 	updateInteractions(player, chest);
+
+	int n = enemies.size();
+	for (int i = 0; i < n; i++) {
+		if (enemies[i]->isDead()) enemies.erase(enemies.begin()+i);
+	}
+
+
 }
 
 void Scene::render()
@@ -178,7 +200,9 @@ void Scene::render()
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 	map->render();
 	player->render();
-	enemy->render();
+	for (Enemy* enemy : enemies) {
+		enemy->render();
+	}
 	barrel->render();
 	chest->render();
 	for (Consumable* item : items) {

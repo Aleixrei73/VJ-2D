@@ -30,6 +30,7 @@ void Enemy::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram) {
 
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;
+	acceleration = glm::vec2(0.1, 0.2);
 	velocity = glm::vec2(0,0);
 	hitBox = glm::ivec2(32, 32);
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
@@ -37,6 +38,16 @@ void Enemy::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram) {
 }
 
 void Enemy::update(int deltaTime) {
+
+	if (dying) {
+		velocity.y += acceleration.y *deltaTime / 10;
+		position.y += int(velocity.y);
+		if (position.y - hitBox.y > 640) {
+			death = true;
+		}
+		sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
+		return;
+	}
 
 	sprite->update(deltaTime);
 
@@ -77,6 +88,11 @@ void Enemy::update(int deltaTime) {
 void Enemy::render()
 {
 	sprite->render();
+}
+
+void Enemy::die() {
+	dying = true;
+	velocity.y = -7;
 }
 
 

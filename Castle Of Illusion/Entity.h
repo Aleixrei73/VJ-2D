@@ -18,6 +18,8 @@ public:
 	glm::ivec2 getPosition() const;
 	glm::vec2 getVelocity() const;
 	glm::vec2 getAcceleration() const;
+	bool isDead() const;
+	bool isDying() const;
 
 protected:
 	glm::ivec2 tileMapDispl, position, hitBox;
@@ -25,4 +27,6 @@ protected:
 	Texture spritesheet;
 	Sprite *sprite;
 	TileMap *map;
+	bool dying;
+	bool death;
 };

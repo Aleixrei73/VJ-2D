@@ -75,6 +75,8 @@ void Barrel::update(int deltaTime) {
 
 	}
 
+	if (state == THROWED && velocity.x == 0 && velocity.y == 0) state = FREE;
+
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
 
 }

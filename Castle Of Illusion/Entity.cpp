@@ -52,3 +52,13 @@ glm::vec2 Entity::getAcceleration() const
 {
 	return glm::ivec2();
 }
+
+bool Entity::isDead() const
+{
+	return death;
+}
+
+bool Entity::isDying() const
+{
+	return dying;
+}

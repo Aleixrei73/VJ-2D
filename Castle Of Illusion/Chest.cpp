@@ -5,7 +5,7 @@ enum ChestAnims
 	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT
 };
 
-void Chest::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram) {
+void Chest::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, ConsumableType itemType) {
 	spritesheet.loadFromFile("images/bub.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.25, 0.25), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(4);
@@ -32,14 +32,19 @@ void Chest::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram) {
 	acceleration = glm::vec2(0.1, 0.2);
 	velocity = glm::vec2(0, 0);
 	hitBox = glm::ivec2(32, 32);
+	opened = false;
+	item = new Consumable();
+	item->setType(itemType);
 }
 
 void Chest::render() {
 	sprite->render();
 }
 
-void Chest::open() {
+Consumable * Chest::open() {
 	sprite->changeAnimation(MOVE_RIGHT);
+	opened = true;
+	return item;
 }
 
 bool Chest::isOpened()

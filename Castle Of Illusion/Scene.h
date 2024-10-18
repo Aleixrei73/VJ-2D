@@ -9,12 +9,13 @@
 #include "Enemy.h"
 #include "Barrel.h"
 #include "Chest.h"
+#include "Consumable.h"
 
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
 
-enum Direction { LEFT, RIGHT, UP, NONE };
+enum Direction { NONE = 0, LEFT, RIGHT, UP};
 
 
 class Scene
@@ -33,8 +34,7 @@ private:
 	void updateInteractions(Player * player, Enemy * enemy);
 	void updateInteractions(Player * player, Barrel * barrel);
 	void updateInteractions(Player * player, Chest * chest);
-	Direction checkCollisionDirection(Player * player, Enemy * enemy);
-	bool isCollision(Entity *a, Entity *b);
+	Direction isCollision(Entity * player, Entity * enemy);
 
 private:
 	TileMap *map;
@@ -42,6 +42,7 @@ private:
 	Enemy *enemy;
 	Barrel *barrel;
 	Chest *chest;
+	vector<Consumable *> items;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::mat4 projection;

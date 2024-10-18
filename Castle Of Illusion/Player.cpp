@@ -183,7 +183,10 @@ void Player::update(int deltaTime)
 
 		position.y += int(velocity.y);
 
-		if (map->collisionMoveDown(position, hitBox, &position.y)) action = PlayerAction::GROUNDED;
+		if (map->collisionMoveDown(position, hitBox, &position.y)) {
+			action = PlayerAction::GROUNDED;
+			velocity.y = 0;
+		}
 
 	}
 

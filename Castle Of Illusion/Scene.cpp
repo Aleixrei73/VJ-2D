@@ -47,14 +47,14 @@ void Scene::init()
 	barrel->setPosition(glm::vec2(30 * map->getTileSize(), 32 * map->getTileSize()));
 	barrel->setTileMap(map);
 	chest = new Chest();
-	chest->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	chest->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, POINTS);
 	chest->setPosition(glm::vec2(25 * map->getTileSize(), 35 * map->getTileSize()));
 	chest->setTileMap(map);
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
 	currentTime = 0.0f;
 }
 
-Direction Scene::checkCollisionDirection(Player *player, Enemy *enemy) {
+Direction Scene::isCollision(Entity *player, Entity *enemy) {
 	glm::ivec2 posPlayer = player->getPosition();
 	glm::ivec2 hitBoxPlayer = player->getHitBox();
 	glm::ivec2 posEnemy = enemy->getPosition();
@@ -67,7 +67,7 @@ Direction Scene::checkCollisionDirection(Player *player, Enemy *enemy) {
 
 	if (posPlayer.y > enemyTopHitBox && playerTopHitBox < posEnemy.y) {
 
-		if (player->getAction() == PlayerAction::FALLING && posPlayer.y < (enemyTopHitBox + hitBoxEnemy.y*0.50)) {
+		if (player->getVelocity().y > 0 && posPlayer.y < (enemyTopHitBox + hitBoxEnemy.y*0.20)) {
 			if ((playerRightBorder > posEnemy.x && playerRightBorder < enemyRightBorder) ||
 				(posPlayer.x < enemyRightBorder && posPlayer.x > posEnemy.x)) return UP;
 		}
@@ -82,31 +82,9 @@ Direction Scene::checkCollisionDirection(Player *player, Enemy *enemy) {
 	return NONE;
 }
 
-bool Scene::isCollision(Entity * a, Entity * b)
-{
-	glm::ivec2 posA = a->getPosition();
-	glm::ivec2 hitBoxA = a->getHitBox();
-	glm::ivec2 posB = b->getPosition();
-	glm::ivec2 hitBoxB = b->getHitBox();
-
-	int aTopHitBox = posA.y - hitBoxA.y;
-	int bTopHitBox = posB.y - hitBoxB.y;
-	int aRightBorder = posA.x + hitBoxA.x;
-	int bRightBorder = posB.x + hitBoxB.x;
-
-	if (posA.y > bTopHitBox && aTopHitBox < posB.y) {
-		if ((aRightBorder > posB.x && aRightBorder < bRightBorder) ||
-			(posA.x < bRightBorder && posA.x > posB.x)) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
 void Scene::updateInteractions(Player *player, Enemy *enemy) {
 	if (player->getAction() != PlayerAction::ATTACKING) {
-		Direction dir = checkCollisionDirection(player, enemy);
+		Direction dir = isCollision(player, enemy);
 
 		if (dir == NONE) return;
 
@@ -125,6 +103,8 @@ void Scene::updateInteractions(Player *player, Enemy *enemy) {
 		}
 
 		if (dir == UP) {
+			glm::ivec2 hitPosition = glm::ivec2(player->getPosition().x, enemy->getPosition().y) - glm::ivec2(0, enemy->getHitBox().y);
+			player->setPosition(hitPosition);
 			player->setJump(-5);
 			return;
 		}
@@ -134,14 +114,15 @@ void Scene::updateInteractions(Player *player, Enemy *enemy) {
 void Scene::updateInteractions(Player * player, Barrel * barrel) {
 
 	if (!interacting && Game::instance().getKey(GLFW_KEY_V)) {
-		interacting = true;
 		if (barrel->getState() == PICKED) {
+			interacting = true;
 			barrel->setState(THROWED);
 			glm::vec2 newVelocity = glm::vec2(player->getVelocity().x * 3, player->getVelocity().y - 7);
 			barrel->setVelocity(newVelocity);
 			player->setPicking(false);
 		}
 		else if (isCollision(player, barrel) && !player->isPicking()) {
+			interacting = true;
 			barrel->setState(PICKED);
 			barrel->setVelocity(glm::vec2(0, 0));
 			player->setPicking(true);
@@ -157,10 +138,16 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 
 void Scene::updateInteractions(Player * player, Chest * chest) {
 
-	if (!interacting && Game::instance().getKey(GLFW_KEY_V) && !chest->isOpened()) {
-		interacting = true;
+	bool key = (!(interacting) && Game::instance().getKey(GLFW_KEY_V) && !chest->isOpened());
+
+	if (!(interacting) && Game::instance().getKey(GLFW_KEY_V) && !chest->isOpened()) {
 		if (isCollision(player, chest)) {
-			chest->open();
+			interacting = true;
+			Consumable *item = chest->open();	
+			item->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+			item->setTileMap(map);
+			item->drop(chest->getPosition());
+			items.push_back(item);
 		}
 	}
 }
@@ -171,6 +158,9 @@ void Scene::update(int deltaTime) {
 	player->update(deltaTime);
 	enemy->update(deltaTime);
 	barrel->update(deltaTime);
+	for (Consumable* item : items) {
+		item->update(deltaTime);
+	}
 	updateInteractions(player, enemy);
 	updateInteractions(player, barrel);
 	updateInteractions(player, chest);
@@ -191,6 +181,9 @@ void Scene::render()
 	enemy->render();
 	barrel->render();
 	chest->render();
+	for (Consumable* item : items) {
+		item->render();
+	}
 }
 
 void Scene::initShaders()

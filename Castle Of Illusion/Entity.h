@@ -13,6 +13,7 @@ public:
 	void setHorizontalVelocity(float vel);
 	void setVerticalVelocity(float vel);
 	void setAcceleration(const glm::vec2 &acc);
+	virtual void die();
 
 	glm::ivec2 getHitBox() const;
 	glm::ivec2 getPosition() const;

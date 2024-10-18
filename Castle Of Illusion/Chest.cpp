@@ -41,8 +41,26 @@ void Chest::render() {
 	sprite->render();
 }
 
+void Chest::die() {
+	dying = true;
+	velocity.y = -7;
+}
+
+void Chest::update(int deltaTime) {
+
+	if (dying) {
+		velocity.y += acceleration.y *deltaTime / 10;
+		position.y += int(velocity.y);
+		if (position.y - hitBox.y > 640) {
+			death = true;
+		}
+		sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
+		return;
+	}
+
+}
+
 Consumable * Chest::open() {
-	sprite->changeAnimation(MOVE_RIGHT);
 	opened = true;
 	return item;
 }

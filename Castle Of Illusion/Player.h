@@ -20,6 +20,7 @@ public:
 	
 	void setJump(int vel);
 	void setPicking(bool pick);
+	void setGround();
 	bool isPicking();
 
 	PlayerAction getAction();

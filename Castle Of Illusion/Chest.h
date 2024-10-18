@@ -9,6 +9,8 @@ public:
 
 	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderPrograms, ConsumableType itemType);
 	void render();
+	void die() override;
+	void update(int deltaTime);
 	Consumable * open();
 	bool isOpened();
 

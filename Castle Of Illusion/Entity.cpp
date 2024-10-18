@@ -33,6 +33,10 @@ void Entity::setAcceleration(const glm::vec2 & acc)
 	acceleration.y = acc.y;
 }
 
+void Entity::die() {
+	return;
+}
+
 glm::ivec2 Entity::getHitBox() const
 {
 	return hitBox;

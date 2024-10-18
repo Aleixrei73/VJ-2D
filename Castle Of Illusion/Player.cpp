@@ -226,6 +226,11 @@ void Player::setPicking(bool pick) {
 	picking = pick;
 }
 
+void Player::setGround() {
+	action = PlayerAction::GROUNDED;
+	velocity.y = 0;
+}
+
 bool Player::isPicking() {
 	return picking;
 }

@@ -30,6 +30,8 @@ void Barrel::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, 
 
 void Barrel::update(int deltaTime) {
 
+	if (state == PICKED) return;
+
 	if (velocity.x > 0) {
 		velocity.x -= acceleration.x * deltaTime/10;
 		position.x += int(velocity.x);

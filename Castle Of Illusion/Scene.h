@@ -34,14 +34,15 @@ private:
 	void updateInteractions(Player * player, Enemy * enemy);
 	void updateInteractions(Player * player, Barrel * barrel);
 	void updateInteractions(Player * player, Chest * chest);
+	void checkKillCollision(Entity * killer, Entity * target);
 	Direction isCollision(Entity * player, Entity * enemy);
 
 private:
 	TileMap *map;
 	Player *player;
 	vector<Enemy*> enemies;
-	Barrel *barrel;
-	Chest *chest;
+	vector<Barrel*> barrels;
+	vector<Chest*> chests;
 	vector<Consumable *> items;
 	ShaderProgram texProgram;
 	float currentTime;

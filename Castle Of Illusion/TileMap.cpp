@@ -224,6 +224,28 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, i
 	return false;
 }
 
+bool TileMap::isEdgeLeft(const glm::ivec2 & pos, const glm::ivec2 & size) const
+{
+	int x, y0, y1;
+	x = pos.x / tileSize;
+	y1 = (pos.y) / tileSize;
+
+	if (map[ y1*mapSize.x + x ] == 0) return true;
+
+	return false;
+}
+
+bool TileMap::isEdgeRight(const glm::ivec2 & pos, const glm::ivec2 & size) const
+{
+	int x, y0, y1;
+	x = (pos.x + size.x - 1) / tileSize;
+	y1 = (pos.y) / tileSize;
+
+	if (map[y1*mapSize.x + x] == 0) return true;
+
+	return false;
+}
+
 
 
 

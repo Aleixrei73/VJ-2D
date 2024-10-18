@@ -3,7 +3,7 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "tutorial.tmx",
+    "activeFile": "Mapa pruebas.tmx",
     "expandedProjectPaths": [
     ],
     "fileStates": {
@@ -16,7 +16,7 @@
             "selectedLayer": 0,
             "viewCenter": {
                 "x": 514.4035969320287,
-                "y": 319.9153663052103
+                "y": 319.91536630521034
             }
         },
         "bo.tsx": {
@@ -26,8 +26,8 @@
             "scale": 1.8287499999999999,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 239.78127136021877,
-                "y": 160.2187286397813
+                "x": 258.3732057416268,
+                "y": 82.57006151742993
             }
         }
     },
@@ -46,9 +46,9 @@
     ],
     "project": "Map.tiled-project",
     "recentFiles": [
-        "Mapa pruebas.tmx",
+        "tutorial.tmx",
         "Ground_Diffuse.tsx",
-        "tutorial.tmx"
+        "Mapa pruebas.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.tileSize": {

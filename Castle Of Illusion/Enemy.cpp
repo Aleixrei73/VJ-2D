@@ -59,7 +59,7 @@ void Enemy::update(int deltaTime) {
 			sprite->changeAnimation(MOVE_RIGHT);
 		}
 
-		if (map->collisionMoveRight(position, hitBox)) {
+		if (map->collisionMoveRight(position, hitBox) || map->isEdgeRight(position, hitBox)) {
 			position.x -= velocity.x;
 			velocity.x = velocity.x * -1;
 		}
@@ -72,7 +72,7 @@ void Enemy::update(int deltaTime) {
 			sprite->changeAnimation(MOVE_LEFT);
 		}
 
-		if (map->collisionMoveLeft(position, hitBox)) {
+		if (map->collisionMoveLeft(position, hitBox) || map->isEdgeLeft(position, hitBox) ) {
 			position.x -= velocity.x;
 			velocity.x = velocity.x * -1;
 		}

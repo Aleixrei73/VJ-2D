@@ -133,7 +133,7 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 			barrel->setVelocity(newVelocity);
 			player->setPicking(false);
 		}
-		else if (!player->isPicking() && dir != NONE && dir != UP) {
+		else if (!player->isPicking() && dir != NONE) {
 			interacting = true;
 			barrel->setState(PICKED);
 			barrel->setVelocity(glm::vec2(0, 0));
@@ -150,7 +150,12 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 	else if (dir == UP) {
 		glm::ivec2 newPosition = glm::ivec2(player->getPosition().x, barrel->getPosition().y - barrel->getHitBox().y);
 		player->setPosition(newPosition);
-		player->setGround();
+		player->setAction(PlayerAction::GROUNDED);
+		//We must check if player needs to jump since the player update will make it think it is in the air
+		if (Game::instance().getKey(GLFW_KEY_SPACE)) {
+			player->setAction(PlayerAction::JUMPING);
+			player->setVerticalVelocity(-7.0);
+		}
 	}
 }
 

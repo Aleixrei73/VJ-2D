@@ -192,6 +192,8 @@ void Player::update(int deltaTime)
 
 	else if (action != PlayerAction::ATTACKING){
 
+		velocity.y = 0;
+
 		position.y += 1;
 
  		if (!map->collisionMoveDown(position, hitBox, &position.y)) action = PlayerAction::FALLING;
@@ -226,9 +228,8 @@ void Player::setPicking(bool pick) {
 	picking = pick;
 }
 
-void Player::setGround() {
-	action = PlayerAction::GROUNDED;
-	velocity.y = 0;
+void Player::setAction(PlayerAction act) {
+	action = act;
 }
 
 bool Player::isPicking() {

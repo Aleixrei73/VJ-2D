@@ -10,7 +10,7 @@ Texture::Texture()
 	wrapS = GL_REPEAT;
 	wrapT = GL_REPEAT;
 	minFilter = GL_LINEAR_MIPMAP_LINEAR;
-	magFilter = GL_LINEAR_MIPMAP_LINEAR;
+	magFilter = GL_NEAREST;
 }
 
 

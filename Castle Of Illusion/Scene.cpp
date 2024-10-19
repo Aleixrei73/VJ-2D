@@ -70,9 +70,9 @@ Direction Scene::isCollision(Entity *player, Entity *enemy) {
 
 	if (posPlayer.y >= enemyTopHitBox && playerTopHitBox <= posEnemy.y) {
 
-		if (player->getVelocity().y >= 0 && posPlayer.y <= (enemyTopHitBox + hitBoxEnemy.y*0.20)) {
-			if ((playerRightBorder >= posEnemy.x && playerRightBorder <= enemyRightBorder) ||
-				(posPlayer.x <= enemyRightBorder && posPlayer.x >= posEnemy.x)) return UP;
+		if (player->getVelocity().y >= 0 && posPlayer.y <= (enemyTopHitBox + 7)) {
+			if ((posPlayer.x <= enemyRightBorder && enemyRightBorder <= playerRightBorder) ||
+				((posPlayer.x <= posEnemy.x && posEnemy.x <= playerRightBorder))) return UP;
 		}
 
 		if (playerRightBorder >= posEnemy.x && playerRightBorder <= enemyRightBorder) return LEFT;
@@ -128,12 +128,16 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 		if (barrel->getState() == PICKED) {
 			interacting = true;
 			barrel->setState(THROWED);
-			glm::vec2 newVelocity = glm::vec2(player->getVelocity().x * 3, player->getVelocity().y - 7);
-			if (player->getVelocity().x == 0) newVelocity.y = 0;
+			int direction = player->getVelocity().x > 0 ? 1 : -1;
+			glm::vec2 newVelocity = glm::vec2(10*direction, -10);
+			if (player->getVelocity().x == 0) {
+				newVelocity.y = 0;
+				newVelocity.x = 0;
+			}
 			barrel->setVelocity(newVelocity);
 			player->setPicking(false);
 		}
-		else if (!player->isPicking() && dir != NONE) {
+		else if (!player->isPicking() && barrel->getState() == FREE && dir != NONE) {
 			interacting = true;
 			barrel->setState(PICKED);
 			barrel->setVelocity(glm::vec2(0, 0));
@@ -147,7 +151,7 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 		barrel->setPosition(newPosition);
 	}
 
-	else if (dir == UP) {
+	else if (dir == UP && barrel->getState() == FREE) {
 		glm::ivec2 newPosition = glm::ivec2(player->getPosition().x, barrel->getPosition().y - barrel->getHitBox().y);
 		player->setPosition(newPosition);
 		player->setAction(PlayerAction::GROUNDED);
@@ -205,8 +209,8 @@ void Scene::update(int deltaTime) {
 	}
 
 	for (Chest* chest : chests) {
-		updateInteractions(player, chest);
-		if (chest->isDying())chest->update(deltaTime);
+		if (!chest->isDying())updateInteractions(player, chest);
+		else chest->update(deltaTime);
 	}
 
 	//Check interaction between entities (basically checks if a barrel is hitting an enemy when throwed)

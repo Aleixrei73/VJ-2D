@@ -28,7 +28,6 @@ TileMap::~TileMap()
 		delete map;
 }
 
-
 void TileMap::render() const
 {
 	glEnable(GL_TEXTURE_2D);
@@ -56,7 +55,8 @@ void TileMap::loadMapFromCSV(const string & tileMapFile)
 	string line, word, temp;
 
 
-	map = new int[tilesheetSize.y * tilesheetSize.x];
+	map = new int[mapSize.y * mapSize.x];
+
 	for (int i = 0; i < mapSize.y; i++)
 	{
 		getline(fin, line);

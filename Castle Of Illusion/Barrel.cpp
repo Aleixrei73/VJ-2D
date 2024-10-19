@@ -21,7 +21,7 @@ void Barrel::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, 
 	explosive = expl;
 	exploded = false;
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
-	acceleration = glm::vec2(0.1, 0.2);
+	acceleration = glm::vec2(0, 0.2);
 	velocity = glm::vec2(0, 0);
 	hitBox = glm::ivec2(32, 32);
 	state = FREE;
@@ -69,6 +69,7 @@ void Barrel::update(int deltaTime) {
 
 		if (map->collisionMoveDown(position, hitBox, &position.y)) {
 			velocity.y = 0;
+			velocity.x = 0;
 			if (explosive && (state == THROWED)) {
 				explode();
 				exploded = true;

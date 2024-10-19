@@ -116,6 +116,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Background.cpp" />
     <ClCompile Include="Chest.cpp" />
     <ClCompile Include="Consumable.cpp" />
     <ClCompile Include="Enemy.cpp" />
@@ -132,6 +133,7 @@
     <ClCompile Include="TileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Background.h" />
     <ClInclude Include="Chest.h" />
     <ClInclude Include="Consumable.h" />
     <ClInclude Include="Entity.h" />

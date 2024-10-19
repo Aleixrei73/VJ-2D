@@ -1,8 +1,5 @@
 ﻿  Scene.cpp
-LINK : warning LNK4098: la biblioteca predeterminada'MSVCRT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
-SOIL.lib(image_DXT.obj) : warning LNK4099: no se encontró PDB 'vc100.pdb' con 'SOIL.lib(image_DXT.obj)' o en 'C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\Castle Of Illusion\Castle Of Illusion\Debug\vc100.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-SOIL.lib(image_helper.obj) : warning LNK4099: no se encontró PDB 'vc100.pdb' con 'SOIL.lib(image_helper.obj)' o en 'C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\Castle Of Illusion\Castle Of Illusion\Debug\vc100.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-SOIL.lib(SOIL.obj) : warning LNK4099: no se encontró PDB 'vc100.pdb' con 'SOIL.lib(SOIL.obj)' o en 'C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\Castle Of Illusion\Castle Of Illusion\Debug\vc100.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
-SOIL.lib(stb_image_aug.obj) : warning LNK4099: no se encontró PDB 'vc100.pdb' con 'SOIL.lib(stb_image_aug.obj)' o en 'C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\Castle Of Illusion\Castle Of Illusion\Debug\vc100.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
+  Background.cpp
+  Generando código...
   Castle Of Illusion.vcxproj -> C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\Castle Of Illusion\Castle Of Illusion\Debug\Castle Of Illusion.exe
   Castle Of Illusion.vcxproj -> C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\Castle Of Illusion\Castle Of Illusion\Debug\Castle Of Illusion.pdb (Partial PDB)

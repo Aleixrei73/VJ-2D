@@ -94,7 +94,7 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(MOVE_LEFT);
 		}
 
-		velocity.x = velocity.x - acceleration.x;
+		velocity.x = velocity.x - acceleration.x * deltaTime/10;
 
 		if (velocity.x < -MAX_VELOCITY) velocity.x = -MAX_VELOCITY;
 
@@ -114,7 +114,7 @@ void Player::update(int deltaTime)
 			sprite->changeAnimation(MOVE_RIGHT);
 		}
 
-		velocity.x = velocity.x + acceleration.x;
+		velocity.x = velocity.x + acceleration.x * deltaTime/10;
 
 		if (velocity.x > MAX_VELOCITY) velocity.x = MAX_VELOCITY;
 
@@ -131,7 +131,7 @@ void Player::update(int deltaTime)
 	else {
 
 		if (velocity.x < 0) {
-			velocity.x = velocity.x + float(0.1);
+			velocity.x = velocity.x + float(0.1) * deltaTime / 10;
 			if (velocity.x > 0) velocity.x = 0;
 			position.x += int(velocity.x);
 			if (map->collisionMoveLeft(position, hitBox)) {
@@ -141,7 +141,7 @@ void Player::update(int deltaTime)
 			}
 		}
 		else if (velocity.x > 0) {
-			velocity.x = velocity.x - float(0.1);
+			velocity.x = velocity.x - float(0.1) * deltaTime / 10;
 			if (velocity.x < 0) velocity.x = 0;
 			position.x += int(velocity.x);
 			if (map->collisionMoveRight(position, hitBox)) {

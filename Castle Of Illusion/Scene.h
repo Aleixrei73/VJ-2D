@@ -10,6 +10,7 @@
 #include "Barrel.h"
 #include "Chest.h"
 #include "Consumable.h"
+#include "Background.h"
 
 
 // Scene contains all the entities of our game.
@@ -36,16 +37,19 @@ private:
 	void updateInteractions(Player * player, Chest * chest);
 	void checkKillCollision(Entity * killer, Entity * target);
 	Direction isCollision(Entity * player, Entity * enemy);
+	void updateCamera(int deltaTime);
 
 private:
 	TileMap *map;
 	Player *player;
+	Background *background;
 	vector<Enemy*> enemies;
 	vector<Barrel*> barrels;
 	vector<Chest*> chests;
 	vector<Consumable *> items;
 	ShaderProgram texProgram;
 	float currentTime;
+	glm::ivec2 cameraPos;
 	glm::mat4 projection;
 	bool interacting;
 };

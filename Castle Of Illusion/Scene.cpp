@@ -3,13 +3,17 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Scene.h"
 #include "Game.h"
+#include <algorithm>
 
 
-#define SCREEN_X 16
-#define SCREEN_Y 16
+#define SCREEN_X 0
+#define SCREEN_Y 0
 
 #define INIT_PLAYER_X_TILES 0
-#define INIT_PLAYER_Y_TILES 33
+#define INIT_PLAYER_Y_TILES 6
+
+#define CAMERA_WIDHT 10
+#define AMPLITUDE 7
 
 
 Scene::Scene()
@@ -31,6 +35,10 @@ void Scene::init()
 {
 	initShaders();
 	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+
+	background = new Background();
+	background->init(glm::ivec2(0, float(7 * map->getTileSize())), texProgram);
+	
 	player = new Player();
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
@@ -38,22 +46,28 @@ void Scene::init()
 
 	Enemy *enemy = new Enemy();
 	enemy->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	enemy->setPosition(glm::vec2(45 * map->getTileSize(), 32 * map->getTileSize()));
+	enemy->setPosition(glm::vec2(45 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	enemy->setTileMap(map);
 	enemy->setHorizontalVelocity(1);
+	
 	enemies.push_back(enemy);
 
 	Barrel *barrel = new Barrel();
 	barrel->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
-	barrel->setPosition(glm::vec2(30 * map->getTileSize(), 32 * map->getTileSize()));
+	barrel->setPosition(glm::vec2(30 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	barrel->setTileMap(map);
+	
 	barrels.push_back(barrel);
+
 	Chest *chest = new Chest();
 	chest->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, POINTS);
-	chest->setPosition(glm::vec2(25 * map->getTileSize(), 35 * map->getTileSize()));
+	chest->setPosition(glm::vec2(25 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	chest->setTileMap(map);
+	
 	chests.push_back(chest);
-	projection = glm::ortho(0.f, float(SCREEN_WIDTH), float(SCREEN_HEIGHT), 0.f);
+
+	projection = glm::ortho(0.f, float(SCREEN_WIDTH) - 16 * map->getTileSize(), 2*float(SCREEN_HEIGHT) + 10*map->getTileSize(),0.f);
+
 	currentTime = 0.0f;
 }
 
@@ -83,6 +97,27 @@ Direction Scene::isCollision(Entity *player, Entity *enemy) {
 	}
 
 	return NONE;
+}
+
+void Scene::updateCamera(int deltaTime) {
+
+	float aspectRatio = float(SCREEN_WIDTH) / SCREEN_HEIGHT;
+
+	float cameraShift = player->getVelocity().x / 3.f * map->getTileSize()/4.f;
+	float cameraLeft = float(player->getPosition().x) - AMPLITUDE * map->getTileSize() + cameraShift;
+	float cameraRight = float(player->getPosition().x) + AMPLITUDE * map->getTileSize() + cameraShift;
+
+	if (cameraLeft < 0) {
+		cameraLeft = 0.f;
+		cameraRight = 2.f * AMPLITUDE * map->getTileSize();
+	}
+	else if (cameraRight > SCREEN_WIDTH * 2) {
+		cameraRight = SCREEN_WIDTH * 2;
+		cameraLeft = cameraRight - 2*AMPLITUDE * map->getTileSize();
+	}
+
+	projection = glm::ortho(cameraLeft, cameraRight, float(10*map->getTileSize()), 0.f);
+
 }
 
 void Scene::updateInteractions(Player *player, Enemy *enemy) {
@@ -172,11 +207,22 @@ void Scene::updateInteractions(Player * player, Chest * chest) {
 		player->setPosition(hitPosition);
 		player->setJump(-5);
 		Consumable *item = chest->open();
-		item->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+		item->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram); 
 		item->setTileMap(map);
 		item->drop(chest->getPosition());
 		items.push_back(item);
 		chest->die();
+	}
+
+	else if (dir == UP) {
+		glm::ivec2 newPosition = glm::ivec2(player->getPosition().x, chest->getPosition().y - chest->getHitBox().y);
+		player->setPosition(newPosition);
+		player->setAction(PlayerAction::GROUNDED);
+		//We must check if player needs to jump since the player update will make it think it is in the air
+		if (Game::instance().getKey(GLFW_KEY_SPACE)) {
+			player->setAction(PlayerAction::JUMPING);
+			player->setVerticalVelocity(-7.0);
+		}
 	}
 }
 
@@ -238,7 +284,7 @@ void Scene::update(int deltaTime) {
 		if (barrels[i]->isDead()) barrels.erase(barrels.begin() + i);
 	}
 
-
+	updateCamera(deltaTime);
 }
 
 void Scene::render()
@@ -251,6 +297,7 @@ void Scene::render()
 	modelview = glm::mat4(1.0f);
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
+
 	map->render();
 
 	for (Enemy* enemy : enemies) {

@@ -51,10 +51,9 @@ void GUI::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, int
 
 	glm::vec2 timePos = scorePos + glm::vec2(tileGap * TILE_SIZE, 0);
 
-	timeSprites.push_back(createLetter('T', timePos, shaderProgram));
-	timeSprites.push_back(createLetter('I', timePos + glm::vec2(LETTER_GAP, 0), shaderProgram));
-	timeSprites.push_back(createLetter('M', timePos + glm::vec2(LETTER_GAP * 2, 0), shaderProgram));
-	timeSprites.push_back(createLetter('E', timePos + glm::vec2(LETTER_GAP * 3, 0), shaderProgram));
+	timeSprites.push_back(createLetter('G', timePos, shaderProgram));
+	timeSprites.push_back(createLetter('A', timePos + glm::vec2(LETTER_GAP, 0), shaderProgram));
+	timeSprites.push_back(createLetter('Y', timePos + glm::vec2(LETTER_GAP * 2, 0), shaderProgram));
 
 
 
@@ -63,6 +62,7 @@ void GUI::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, int
 
 void GUI::render() {
 	background->render();
+
 	for (Sprite* letter : livesSprites) {
 		letter->render();
 	}

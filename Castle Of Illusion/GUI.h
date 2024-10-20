@@ -29,5 +29,5 @@ private:
 	Texture backgroundColor;
 	int amplitude;
 	float tileGap;
-	Sprite* createLetter(char letter, const glm::ivec2 &pos, ShaderProgram & shaderProgram);
+	Sprite* createLetter(char letter, const glm::vec2 &pos, ShaderProgram & shaderProgram);
 };

@@ -104,8 +104,8 @@ Direction Scene::isCollision(Entity *player, Entity *enemy) {
 void Scene::updateScreen(int deltaTime) {
 
 	float cameraShift = player->getVelocity().x / 3.f * map->getTileSize()/4.f;
-	float cameraLeft = float(player->getPosition().x) - AMPLITUDE * map->getTileSize() + cameraShift;
-	float cameraRight = float(player->getPosition().x) + AMPLITUDE * map->getTileSize() + cameraShift;
+	float cameraLeft = float(player->getPosition().x) - AMPLITUDE * map->getTileSize() + cameraShift + 16;
+	float cameraRight = float(player->getPosition().x) + AMPLITUDE * map->getTileSize() + cameraShift + 16;
 
 	if (cameraLeft < 0) {
 		cameraLeft = 0.f;

@@ -9,7 +9,7 @@ void GUI::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, int
 	timeLeft = 200;
 	tries = 3;
 	amplitude = amp;
-	tileGap = amplitude / 6.f;
+	tileGap = amplitude / 4.f;
 	backgroundColor.loadFromFile("images/Black.png", TEXTURE_PIXEL_FORMAT_RGB);
 	background = Sprite::createSprite(glm::ivec2(amplitude*TILE_SIZE, HEIGHT*TILE_SIZE), glm::vec2(1, 1), &backgroundColor, &shaderProgram);
 	
@@ -25,7 +25,9 @@ void GUI::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, int
 
 	font.loadFromFile("images/Font.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	glm::vec2 livesPos = basePosition + glm::vec2(tileGap*TILE_SIZE,-2*TILE_SIZE);
+	float shiftCenter = (tileGap*TILE_SIZE - 7 * 5)/2.f;
+
+	glm::vec2 livesPos = basePosition + glm::vec2(shiftCenter,-3*TILE_SIZE);
 
 	livesSprites.push_back(createLetter('P', livesPos, shaderProgram));
 	livesSprites.push_back(createLetter('O', livesPos + glm::vec2(LETTER_GAP,0), shaderProgram));
@@ -49,11 +51,16 @@ void GUI::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, int
 	scoreSprites.push_back(createLetter('R', scorePos + glm::vec2(LETTER_GAP * 3, 0), shaderProgram));
 	scoreSprites.push_back(createLetter('E', scorePos + glm::vec2(LETTER_GAP * 4, 0), shaderProgram));
 
-	glm::vec2 timePos = scorePos + glm::vec2(tileGap * TILE_SIZE, 0);
 
-	timeSprites.push_back(createLetter('G', timePos, shaderProgram));
-	timeSprites.push_back(createLetter('A', timePos + glm::vec2(LETTER_GAP, 0), shaderProgram));
-	timeSprites.push_back(createLetter('Y', timePos + glm::vec2(LETTER_GAP * 2, 0), shaderProgram));
+	glm::vec2 timePos = scorePos + glm::vec2(tileGap * TILE_SIZE - shiftCenter, 0);
+	shiftCenter = (tileGap*(2 - TILE_SIZE) - 7 * 4) / 2;
+
+	timePos = timePos + glm::vec2(shiftCenter, 0);
+
+	timeSprites.push_back(createLetter('T', timePos, shaderProgram));
+	timeSprites.push_back(createLetter('I', timePos + glm::vec2(LETTER_GAP, 0), shaderProgram));
+	timeSprites.push_back(createLetter('M', timePos + glm::vec2(LETTER_GAP * 2, 0), shaderProgram));
+	timeSprites.push_back(createLetter('E', timePos + glm::vec2(LETTER_GAP * 3, 0), shaderProgram));
 
 
 
@@ -83,8 +90,10 @@ void GUI::render() {
 void GUI::update(const glm::vec2 & newPos) {
 	background->setPosition(newPos);
 
+	float shiftCenter = (tileGap*TILE_SIZE - 7*5) /2.f;
+
 	int n = livesSprites.size();
-	glm::vec2 livesPos = newPos + glm::vec2(tileGap * TILE_SIZE, -2 * TILE_SIZE);
+	glm::vec2 livesPos = newPos + glm::vec2(shiftCenter, -3 * TILE_SIZE + 9);
 
 	for (int i = 0; i < n; i++) {
 		livesSprites[i]->setPosition(livesPos + glm::vec2(LETTER_GAP*i, 0));
@@ -104,8 +113,12 @@ void GUI::update(const glm::vec2 & newPos) {
 		scoreSprites[i]->setPosition(scorePos + glm::vec2(LETTER_GAP*i, 0));
 	}
 
+	glm::vec2 timePos = scorePos + glm::vec2(tileGap * TILE_SIZE - shiftCenter, 0);
+
+	shiftCenter = (tileGap*TILE_SIZE - 7 * 4.f) / 2.f;
+
 	n = timeSprites.size();
-	glm::vec2 timePos = scorePos + glm::vec2(tileGap * TILE_SIZE, 0);
+	timePos = timePos + glm::vec2(shiftCenter, 0);
 
 	for (int i = 0; i < n; i++) {
 		timeSprites[i]->setPosition(timePos + glm::vec2(LETTER_GAP*i, 0));
@@ -114,7 +127,7 @@ void GUI::update(const glm::vec2 & newPos) {
 
 }
 
-Sprite * GUI::createLetter(char letter, const glm::ivec2 & pos, ShaderProgram & shaderProgram) {
+Sprite * GUI::createLetter(char letter, const glm::vec2 & pos, ShaderProgram & shaderProgram) {
 	int letterNum = letter - 'A' + 15;
 	int j = letterNum / 18 + 1;
 	int i = letterNum % 18;

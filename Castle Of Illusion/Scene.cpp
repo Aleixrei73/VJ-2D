@@ -12,8 +12,7 @@
 #define INIT_PLAYER_X_TILES 0
 #define INIT_PLAYER_Y_TILES 6
 
-#define CAMERA_WIDHT 10
-#define AMPLITUDE 7
+#define AMPLITUDE 10
 
 
 Scene::Scene()
@@ -38,6 +37,9 @@ void Scene::init()
 
 	background = new Background();
 	background->init(glm::ivec2(0, float(7 * map->getTileSize())), texProgram);
+
+	gui = new GUI();
+	gui->init(glm::ivec2(SCREEN_X, 10 * map->getTileSize()), texProgram, AMPLITUDE*2);
 	
 	player = new Player();
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
@@ -99,9 +101,7 @@ Direction Scene::isCollision(Entity *player, Entity *enemy) {
 	return NONE;
 }
 
-void Scene::updateCamera(int deltaTime) {
-
-	float aspectRatio = float(SCREEN_WIDTH) / SCREEN_HEIGHT;
+void Scene::updateScreen(int deltaTime) {
 
 	float cameraShift = player->getVelocity().x / 3.f * map->getTileSize()/4.f;
 	float cameraLeft = float(player->getPosition().x) - AMPLITUDE * map->getTileSize() + cameraShift;
@@ -117,6 +117,7 @@ void Scene::updateCamera(int deltaTime) {
 	}
 
 	projection = glm::ortho(cameraLeft, cameraRight, float(10*map->getTileSize()), 0.f);
+	gui->update(glm::vec2(cameraLeft, 10 * map->getTileSize()));
 
 }
 
@@ -284,7 +285,7 @@ void Scene::update(int deltaTime) {
 		if (barrels[i]->isDead()) barrels.erase(barrels.begin() + i);
 	}
 
-	updateCamera(deltaTime);
+	updateScreen(deltaTime);
 }
 
 void Scene::render()
@@ -316,6 +317,7 @@ void Scene::render()
 	}
 
 	player->render();
+	gui->render();
 }
 
 void Scene::initShaders()

@@ -3,6 +3,8 @@
 #include "Sprite.h"
 #include "TileMap.h"
 
+#define MAX_DEAD_POSITION 900
+
 class Entity {
 
 public:

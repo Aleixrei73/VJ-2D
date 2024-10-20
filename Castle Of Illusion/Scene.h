@@ -11,6 +11,7 @@
 #include "Chest.h"
 #include "Consumable.h"
 #include "Background.h"
+#include "GUI.h"
 
 
 // Scene contains all the entities of our game.
@@ -37,12 +38,13 @@ private:
 	void updateInteractions(Player * player, Chest * chest);
 	void checkKillCollision(Entity * killer, Entity * target);
 	Direction isCollision(Entity * player, Entity * enemy);
-	void updateCamera(int deltaTime);
+	void updateScreen(int deltaTime);
 
 private:
 	TileMap *map;
 	Player *player;
 	Background *background;
+	GUI *gui;
 	vector<Enemy*> enemies;
 	vector<Barrel*> barrels;
 	vector<Chest*> chests;

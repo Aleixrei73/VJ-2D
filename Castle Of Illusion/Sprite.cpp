@@ -53,8 +53,10 @@ void Sprite::render() const
 	glm::mat4 modelview = glm::translate(glm::mat4(1.0f), glm::vec3(position.x, position.y, 0.f));
 	shaderProgram->setUniformMatrix4f("modelview", modelview);
 	shaderProgram->setUniform2f("texCoordDispl", texCoordDispl.x, texCoordDispl.y);
-	glEnable(GL_TEXTURE_2D);
-	texture->use();
+	if (texture != nullptr) {
+		glEnable(GL_TEXTURE_2D);
+		texture->use();
+	}
 	glBindVertexArray(vao);
 	glEnableVertexAttribArray(posLocation);
 	glEnableVertexAttribArray(texCoordLocation);
@@ -104,6 +106,10 @@ int Sprite::animation() const
 void Sprite::setPosition(const glm::vec2 &pos)
 {
 	position = pos;
+}
+
+glm::vec2 Sprite::getPosition() {
+	return position;
 }
 
 

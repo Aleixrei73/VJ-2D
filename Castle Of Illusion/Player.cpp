@@ -63,7 +63,10 @@ void Player::update(int deltaTime)
 
 		position.y += int(velocity.y);
 
-		if (map->collisionMoveDown(position, hitBox, &position.y)) action = PlayerAction::GROUNDED;
+		if (map->collisionMoveDown(position, hitBox, &position.y)) {
+			action = PlayerAction::GROUNDED;
+			velocity.y = 0;
+		}
 	}
 
 	else if (Game::instance().getKey(GLFW_KEY_S) && action == PlayerAction::GROUNDED) {
@@ -71,6 +74,7 @@ void Player::update(int deltaTime)
 		hitBox.y = 16;
 
 		velocity.x = 0;
+		velocity.y = 0;
 
 		if (sprite->animation() == MOVE_LEFT) {
 			sprite->changeAnimation(STAND_LEFT);
@@ -83,12 +87,11 @@ void Player::update(int deltaTime)
 
 	else if (Game::instance().getKey(GLFW_KEY_S)) {
 		action = PlayerAction::ATTACKING;
-		velocity.x = 0;
 		velocity.y = 0;
 
 	}
 
-	else if(Game::instance().getKey(GLFW_KEY_A))	{
+	if(Game::instance().getKey(GLFW_KEY_A))	{
 
 		if (sprite->animation() != MOVE_LEFT) {
 			sprite->changeAnimation(MOVE_LEFT);

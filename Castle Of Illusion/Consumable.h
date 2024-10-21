@@ -13,8 +13,11 @@ public:
 	void render();
 	void drop(const glm::ivec2 &pos);
 	void setType(ConsumableType itemType);
+	void die() override;
+	ConsumableType getType();
 
 private:
 	ConsumableType type;
+	bool droped = false;
 
 };

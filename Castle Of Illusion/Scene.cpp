@@ -50,7 +50,7 @@ void Scene::init()
 	enemy->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	enemy->setPosition(glm::vec2(45 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	enemy->setTileMap(map);
-	enemy->setHorizontalVelocity(1);
+	enemy->setHorizontalVelocity(-1);
 	
 	enemies.push_back(enemy);
 
@@ -86,7 +86,7 @@ Direction Scene::isCollision(Entity *player, Entity *enemy) {
 
 	if (posPlayer.y >= enemyTopHitBox && playerTopHitBox <= posEnemy.y) {
 
-		if (player->getVelocity().y >= 0 && posPlayer.y <= (enemyTopHitBox + 7)) {
+		if (player->getVelocity().y >= 0 && posPlayer.y <= (enemyTopHitBox + 10)) {
 			if ((posPlayer.x <= enemyRightBorder && enemyRightBorder <= playerRightBorder) ||
 				((posPlayer.x <= posEnemy.x && posEnemy.x <= playerRightBorder))) return UP;
 		}
@@ -128,15 +128,24 @@ void Scene::updateInteractions(Player *player, Enemy *enemy) {
 
 	if (player->getAction() != PlayerAction::ATTACKING || dir != UP) {
 
+		gui->setLives(gui->getLives() - 1);
+
+		if (gui->getLives() == 0) {
+			player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+			gui->setTries(gui->getTries() - 1);
+			gui->setLives(4);
+			return;
+		}
+
 		if (dir == LEFT) {
-			player->setHorizontalVelocity(-5);
+			player->setHorizontalVelocity(-7);
 			glm::ivec2 hitPosition = glm::ivec2(enemy->getPosition().x, player->getPosition().y) - glm::ivec2(player->getHitBox().x, 0);
 			player->setPosition(hitPosition);
 			return;
 		}
 
 		if (dir == RIGHT) {
-			player->setHorizontalVelocity(5);
+			player->setHorizontalVelocity(7);
 			glm::ivec2 hitPosition = glm::ivec2(enemy->getPosition().x, player->getPosition().y) + glm::ivec2(enemy->getHitBox().x,0);
 			player->setPosition(hitPosition);
 			return;
@@ -150,6 +159,7 @@ void Scene::updateInteractions(Player *player, Enemy *enemy) {
 		}
 	}
 
+	gui->setScore(gui->getScore() + 100);
 	glm::ivec2 hitPosition = glm::ivec2(player->getPosition().x, enemy->getPosition().y) - glm::ivec2(0, enemy->getHitBox().y);
 	player->setPosition(hitPosition);
 	player->setJump(-5);
@@ -227,6 +237,21 @@ void Scene::updateInteractions(Player * player, Chest * chest) {
 	}
 }
 
+void Scene::updateInteractions(Player * player, Consumable * item) {
+
+	Direction dir = isCollision(player, item);
+
+	if (dir != NONE && item->getVelocity().y >= 0) {
+		if (item->getType() == POINTS) {
+			gui->setScore(gui->getScore() + 200);
+		}
+		else {
+			gui->setLives(max(4, gui->getLives()+1));
+		}
+		item->die();
+	}
+}
+
 void Scene::checkKillCollision(Entity * killer, Entity * target) {
 	Direction dir = isCollision(killer, target);
 	if (dir != NONE) target->die();
@@ -253,6 +278,7 @@ void Scene::update(int deltaTime) {
 
 	for (Consumable* item : items) {
 		item->update(deltaTime);
+		updateInteractions(player, item);
 	}
 
 	for (Chest* chest : chests) {
@@ -285,6 +311,11 @@ void Scene::update(int deltaTime) {
 		if (barrels[i]->isDead()) barrels.erase(barrels.begin() + i);
 	}
 
+	n = items.size();
+	for (int i = 0; i < n; i++) {
+		if (items[i]->isDead()) items.erase(items.begin() + i);
+	}
+
 	updateScreen(deltaTime);
 }
 
@@ -301,10 +332,6 @@ void Scene::render()
 
 	map->render();
 
-	for (Enemy* enemy : enemies) {
-		enemy->render();
-	}
-
 	for (Barrel* barrel : barrels) {
 		barrel->render();
 	}
@@ -312,8 +339,13 @@ void Scene::render()
 	for (Chest* chest : chests) {
 		chest->render();
 	}
+
 	for (Consumable* item : items) {
 		item->render();
+	}
+
+	for (Enemy* enemy : enemies) {
+		enemy->render();
 	}
 
 	player->render();

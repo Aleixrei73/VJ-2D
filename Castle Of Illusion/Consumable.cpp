@@ -2,17 +2,24 @@
 
 #define MAX_FALL_VELOCITY 7
 
-enum ConsumableAnims
-{
-	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT
-};
-
 void Consumable::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram) {
 
-	spritesheet.loadFromFile("images/barrilete.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(1, 1), &spritesheet, &shaderProgram);
-	sprite->setNumberAnimations(0);
+	if (type == POINTS) spritesheet.loadFromFile("images/coin.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	else spritesheet.loadFromFile("images/barrilete.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(1/6.f, 1), &spritesheet, &shaderProgram);
+	
+	sprite->setNumberAnimations(1);
+
+	sprite->setAnimationSpeed(0, 8);
+	sprite->addKeyframe(0, glm::vec2(0.f, 0.f));
+	sprite->addKeyframe(0, glm::vec2(1.f / 6.f, 0.f));
+	sprite->addKeyframe(0, glm::vec2(2.f / 6.f, 0.f));
+	sprite->addKeyframe(0, glm::vec2(3.f / 6.f, 0.f));
+	sprite->addKeyframe(0, glm::vec2(4.f / 6.f, 0.f));
+	sprite->addKeyframe(0, glm::vec2(5.f / 6.f, 0.f));
+
 	sprite->changeAnimation(0);
+
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(-1, -1));
 	acceleration = glm::vec2(0.1, 0.2);
@@ -22,7 +29,9 @@ void Consumable::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgr
 
 void Consumable::update(int deltaTime) {
 
-	if (!map->collisionMoveDown(position, hitBox, &position.y)) {
+	sprite->update(deltaTime);
+
+	if (droped && !map->collisionMoveDown(position, hitBox, &position.y)) {
 
 		velocity.y += acceleration.y* deltaTime / 10;
 
@@ -47,10 +56,19 @@ void Consumable::render() {
 void Consumable::drop(const glm::ivec2 & pos) {
 	position.x = pos.x + 8;
 	position.y = pos.y - 8;
-	velocity.y = -7;
+	velocity.y = -10;
+	droped = true;
 }
 
 void Consumable::setType(ConsumableType itemType) {
 
 	type = itemType;
+}
+
+void Consumable::die() {
+	death = true;
+}
+
+ConsumableType Consumable::getType() {
+	return type;
 }

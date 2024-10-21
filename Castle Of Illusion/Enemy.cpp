@@ -8,22 +8,24 @@ enum EnemyAnims
 void Enemy::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram) {
 
 	spritesheet.loadFromFile("images/tree.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(24, 32), glm::vec2(1.f/6, 1), &spritesheet, &shaderProgram);
+	sprite = Sprite::createSprite(glm::ivec2(24, 32), glm::vec2(1.f/8, 1), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(4);
 
-	sprite->setAnimationSpeed(MOVE_LEFT, 2);
-	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.5f, 0.f));
-	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.5f + 1/6.f, 0.f));
+	sprite->setAnimationSpeed(MOVE_LEFT, 5);
+	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.f));
+	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f + 1 / 8.f, 0.f));
+	sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f + 2/8.f, 0.f));
 
-	sprite->setAnimationSpeed(MOVE_RIGHT, 2);
-	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.f, 0.f));
-	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(1 / 6.f, 0.f));
+	sprite->setAnimationSpeed(MOVE_RIGHT, 5);
+	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.5f, 0.f));
+	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.5f + 1 / 8.f, 0.f));
+	sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.5f + 2/ 8.f, 0.f));
 
 	sprite->setAnimationSpeed(DIE_LEFT, 2);
-	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.5f + 1 / 3.f, 0.f));
+	sprite->addKeyframe(DIE_LEFT, glm::vec2(0.5f - 1 / 8.f, 0.f));
 
 	sprite->setAnimationSpeed(DIE_RIGHT, 2);
-	sprite->addKeyframe(DIE_RIGHT, glm::vec2(1 / 3.f, 0.f));
+	sprite->addKeyframe(DIE_RIGHT, glm::vec2(0.5 + 3 / 8.f, 0.f));
 
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;

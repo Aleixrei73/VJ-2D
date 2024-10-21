@@ -18,6 +18,16 @@ public:
 	void render();
 	void update(const glm::vec2 &newPos);
 
+	int getLives();
+	int getScore();
+	int getTries();
+	int getTimeLeft();
+
+	void setLives(int liv);
+	void setTries(int tri);
+	void setScore(int scr);
+	void setTimeLeft(int time);
+
 private:
 
 	int lives;

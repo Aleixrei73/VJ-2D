@@ -1,16 +1,28 @@
 #include "GUI.h"
 
-enum letters {A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, W, X, Y, Z};
+enum HeartState {FILL, EMPTY};
 
 void GUI::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, int amp) {
 	
+
+	//Variable initialitation
+
 	lives = 10;
 	score = 0;
 	timeLeft = 200;
 	tries = 3;
 	amplitude = amp;
 	tileGap = amplitude / 4.f;
+
+
+	//Texture initialitation
+
 	backgroundColor.loadFromFile("images/Black.png", TEXTURE_PIXEL_FORMAT_RGB);
+	font.loadFromFile("images/Font.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	heart.loadFromFile("images/Hearts.png", TEXTURE_PIXEL_FORMAT_RGBA);
+
+	//Background initialitation
+
 	background = Sprite::createSprite(glm::ivec2(amplitude*TILE_SIZE, HEIGHT*TILE_SIZE), glm::vec2(1, 1), &backgroundColor, &shaderProgram);
 	
 	background->setNumberAnimations(0);
@@ -23,47 +35,84 @@ void GUI::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, int
 
 	background->setPosition(glm::vec2(float(basePosition.x), float(basePosition.y)));
 
-	font.loadFromFile("images/Font.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	//Names initialitation
 
-	float shiftCenter = (tileGap*TILE_SIZE - 7 * 5)/2.f;
+	float shiftLetters = (tileGap*TILE_SIZE - 7 * 5)/2.f;
+	float shiftSprite = (tileGap*TILE_SIZE - 4 * 16) / 2.f;
 
-	glm::vec2 livesPos = basePosition + glm::vec2(shiftCenter,-3*TILE_SIZE);
+	glm::vec2 livesPos = basePosition + glm::vec2(shiftLetters,-3*TILE_SIZE);
+	glm::vec2 heartsPos = basePosition + glm::vec2(shiftSprite, -2 * TILE_SIZE);
 
-	livesSprites.push_back(createLetter('P', livesPos, shaderProgram));
-	livesSprites.push_back(createLetter('O', livesPos + glm::vec2(LETTER_GAP,0), shaderProgram));
-	livesSprites.push_back(createLetter('W', livesPos + glm::vec2(LETTER_GAP*2, 0), shaderProgram));
-	livesSprites.push_back(createLetter('E', livesPos + glm::vec2(LETTER_GAP * 3, 0), shaderProgram));
-	livesSprites.push_back(createLetter('R', livesPos + glm::vec2(LETTER_GAP * 4, 0), shaderProgram));
+	shiftSprite = (tileGap*TILE_SIZE - 1 * 5) / 2.f;
 
 	glm::vec2 triesPos = livesPos + glm::vec2(tileGap* TILE_SIZE, 0);
+	glm::vec2 triesNumPos = triesPos + glm::vec2(-shiftLetters+shiftSprite, TILE_SIZE);
 
-	triesSprites.push_back(createLetter('T', triesPos, shaderProgram));
-	triesSprites.push_back(createLetter('R', triesPos + glm::vec2(LETTER_GAP, 0), shaderProgram));
-	triesSprites.push_back(createLetter('I', triesPos + glm::vec2(LETTER_GAP * 2, 0), shaderProgram));
-	triesSprites.push_back(createLetter('E', triesPos + glm::vec2(LETTER_GAP * 3, 0), shaderProgram));
-	triesSprites.push_back(createLetter('S', triesPos + glm::vec2(LETTER_GAP * 4, 0), shaderProgram));
-
+	shiftSprite = (tileGap*TILE_SIZE -  6 * 5) / 2.f;
 	glm::vec2 scorePos = triesPos + glm::vec2(tileGap * TILE_SIZE, 0);
+	glm::vec2 scoreNumPos = scorePos + glm::vec2(-LETTER_GAP/2.f, TILE_SIZE);
 
-	scoreSprites.push_back(createLetter('S', scorePos, shaderProgram));
-	scoreSprites.push_back(createLetter('C', scorePos + glm::vec2(LETTER_GAP, 0), shaderProgram));
-	scoreSprites.push_back(createLetter('O', scorePos + glm::vec2(LETTER_GAP * 2, 0), shaderProgram));
-	scoreSprites.push_back(createLetter('R', scorePos + glm::vec2(LETTER_GAP * 3, 0), shaderProgram));
-	scoreSprites.push_back(createLetter('E', scorePos + glm::vec2(LETTER_GAP * 4, 0), shaderProgram));
+	glm::vec2 timePos = scorePos + glm::vec2(tileGap * TILE_SIZE - shiftLetters, 0);
+
+	shiftLetters = (tileGap*(2 - TILE_SIZE) - 7 * 4) / 2;
+	timePos = timePos + glm::vec2(shiftLetters, 0);
+
+	createWord("POWER", livesSprites, livesPos, shaderProgram);
+	createWord("TRIES", triesSprites, triesPos, shaderProgram);
+	createWord("SCORE", scoreSprites, scorePos, shaderProgram);
+	createWord("TIME" , timeSprites, timePos, shaderProgram);
+
+	//Resources initialitation
+
+	createHearts(heartsPos, shaderProgram);
+	createNumber(tries, 1, triesSprites, triesNumPos, shaderProgram);
+	createNumber(score, 6, scoreSprites, scoreNumPos, shaderProgram);
 
 
-	glm::vec2 timePos = scorePos + glm::vec2(tileGap * TILE_SIZE - shiftCenter, 0);
-	shiftCenter = (tileGap*(2 - TILE_SIZE) - 7 * 4) / 2;
 
-	timePos = timePos + glm::vec2(shiftCenter, 0);
+}
 
-	timeSprites.push_back(createLetter('T', timePos, shaderProgram));
-	timeSprites.push_back(createLetter('I', timePos + glm::vec2(LETTER_GAP, 0), shaderProgram));
-	timeSprites.push_back(createLetter('M', timePos + glm::vec2(LETTER_GAP * 2, 0), shaderProgram));
-	timeSprites.push_back(createLetter('E', timePos + glm::vec2(LETTER_GAP * 3, 0), shaderProgram));
+void GUI::createNumber(int num, int digitNumber, vector<Sprite*>& res, const glm::vec2 & pos, ShaderProgram & shaderProgram) {
 
+	string numStr = to_string(num);
+	int n = numStr.length();
+	int numBegin = 16;
 
+	for (int i = digitNumber-1; i > -1; i--) {
+		int num = 0;
 
+		if (i < n) {
+			num = numStr[i] - '0';
+		}
+
+		Sprite *numSprite = Sprite::createSprite(glm::ivec2(7, 9), glm::vec2(1 / 18.f, 1 / 6.f), &font, &shaderProgram);
+		numSprite->setNumberAnimations(10);
+
+		for (int j = 0; j < 10; j++) {
+			numSprite->setAnimationSpeed(j, 8);
+			numSprite->addKeyframe(j, glm::vec2(1/18.f * ((j + 16)%18) , 1 / 6.f * ((j+16)/18)));
+		}
+
+		numSprite->changeAnimation(num);
+		numSprite->setPosition(glm::vec2(pos.x+LETTER_GAP*((digitNumber - 1) - i), pos.y));
+
+		res.push_back(numSprite);
+	}
+}
+
+void GUI::createHearts(const glm::vec2 &pos, ShaderProgram & shaderProgram) {
+
+	for (int i = 0; i < 4; i++) {
+		Sprite *heartSprite = Sprite::createSprite(glm::ivec2(16,16), glm::vec2(1/2.f, 1), &heart, &shaderProgram);
+		heartSprite->setNumberAnimations(2);
+		heartSprite->setAnimationSpeed(FILL, 1);
+		heartSprite->addKeyframe(FILL, glm::vec2(0.f, 0.f));
+		heartSprite->setAnimationSpeed(EMPTY, 1);
+		heartSprite->addKeyframe(EMPTY, glm::vec2(0.5f, 0.f));
+		heartSprite->changeAnimation(0);
+		heartSprite->setPosition(pos + glm::vec2(HEART_GAP*i,0));
+		livesSprites.push_back(heartSprite);
+	}
 
 }
 
@@ -90,52 +139,78 @@ void GUI::render() {
 void GUI::update(const glm::vec2 & newPos) {
 	background->setPosition(newPos);
 
-	float shiftCenter = (tileGap*TILE_SIZE - 7*5) /2.f;
+	float shiftLetters = (tileGap*TILE_SIZE - 7*5) /2.f;
 
-	int n = livesSprites.size();
-	glm::vec2 livesPos = newPos + glm::vec2(shiftCenter, -3 * TILE_SIZE + 9);
+	glm::vec2 livesPos = newPos + glm::vec2(shiftLetters, -3 * TILE_SIZE + 9);
+	float shiftSprite = (tileGap*TILE_SIZE - 4 * 16) / 2.f;
+	glm::vec2 heartsPos = newPos + glm::vec2(shiftSprite, -2 * TILE_SIZE);
 
-	for (int i = 0; i < n; i++) {
+	glm::vec2 triesPos = livesPos + glm::vec2(tileGap * TILE_SIZE, 0);
+	shiftSprite = (tileGap*TILE_SIZE - 1 * 5) / 2.f;
+	glm::vec2 triesNumPos = triesPos + glm::vec2(-shiftLetters + shiftSprite, TILE_SIZE);
+
+	glm::vec2 scorePos = triesPos + glm::vec2(tileGap* TILE_SIZE, 0);
+
+	glm::vec2 timePos = scorePos + glm::vec2(tileGap * TILE_SIZE - shiftLetters, 0);
+	shiftLetters = (tileGap*TILE_SIZE - 7 * 4.f) / 2.f;
+	timePos = timePos + glm::vec2(shiftLetters, 0);
+
+
+	//Lives update
+
+	for (int i = 0; i < 5; i++) {
 		livesSprites[i]->setPosition(livesPos + glm::vec2(LETTER_GAP*i, 0));
 	}
 
-	n = triesSprites.size();
-	glm::vec2 triesPos = livesPos + glm::vec2(tileGap * TILE_SIZE, 0);
+	for (int i = 5; i < 9; i++) {
+		livesSprites[i]->setPosition(heartsPos + glm::vec2(HEART_GAP*(i-5), 0));
+	}
 
-	for (int i = 0; i < n; i++) {
+	//Tries update
+
+	for (int i = 0; i < 5; i++) {
 		triesSprites[i]->setPosition(triesPos + glm::vec2(LETTER_GAP*i, 0));
 	}
 
-	n = scoreSprites.size();
-	glm::vec2 scorePos = triesPos + glm::vec2(tileGap* TILE_SIZE, 0);
+	for (int i = 5; i < 6; i++) {
+		triesSprites[i]->setPosition(triesNumPos + glm::vec2(LETTER_GAP*(i - 5), 0));
+		triesSprites[i]->changeAnimation(tries);
+	}
 
-	for (int i = 0; i < n; i++) {
+	//Score update
+
+	for (int i = 0; i < 5; i++) {
 		scoreSprites[i]->setPosition(scorePos + glm::vec2(LETTER_GAP*i, 0));
 	}
 
-	glm::vec2 timePos = scorePos + glm::vec2(tileGap * TILE_SIZE - shiftCenter, 0);
 
-	shiftCenter = (tileGap*TILE_SIZE - 7 * 4.f) / 2.f;
+	//Time update
 
-	n = timeSprites.size();
-	timePos = timePos + glm::vec2(shiftCenter, 0);
-
-	for (int i = 0; i < n; i++) {
+	for (int i = 0; i < 4; i++) {
 		timeSprites[i]->setPosition(timePos + glm::vec2(LETTER_GAP*i, 0));
 	}
 
 
 }
 
+void GUI::createWord(string word, vector<Sprite*>& res, const glm::vec2 &pos, ShaderProgram & shaderProgram) {
+
+	int n = word.length();
+
+	for (int i = 0; i < n; i++) {
+		res.push_back(createLetter(word[i], pos + glm::vec2(LETTER_GAP*i, 0), shaderProgram));
+	}
+}
+
 Sprite * GUI::createLetter(char letter, const glm::vec2 & pos, ShaderProgram & shaderProgram) {
 	int letterNum = letter - 'A' + 15;
 	int j = letterNum / 18 + 1;
 	int i = letterNum % 18;
-	Sprite* letterSprite = Sprite::createSprite(glm::ivec2(7, 9), glm::vec2(1/18.f, 1/6.f), &font, &shaderProgram);
+	Sprite* letterSprite = Sprite::createSprite(glm::ivec2(7, 9), glm::vec2(1 / 18.f, 1 / 6.f), &font, &shaderProgram);
 	letterSprite->setNumberAnimations(1);
 
 	letterSprite->setAnimationSpeed(0, 8);
-	letterSprite->addKeyframe(0, glm::vec2(1/18.f * i, 1/6.f * j));
+	letterSprite->addKeyframe(0, glm::vec2(1 / 18.f * i, 1 / 6.f * j));
 
 	letterSprite->changeAnimation(0);
 	letterSprite->setPosition(glm::vec2(float(pos.x), float(pos.y)));

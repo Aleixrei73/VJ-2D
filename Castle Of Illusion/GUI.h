@@ -8,6 +8,7 @@
 #define TILE_SIZE 32
 #define HEIGHT 3
 #define LETTER_GAP 7
+#define HEART_GAP 16
 
 class GUI {
 
@@ -25,9 +26,12 @@ private:
 	int tries;
 	Sprite* background;
 	vector<Sprite*> livesSprites, triesSprites, scoreSprites, timeSprites;
-	Texture font;
-	Texture backgroundColor;
+	Texture backgroundColor, font, heart;
 	int amplitude;
 	float tileGap;
+
 	Sprite* createLetter(char letter, const glm::vec2 &pos, ShaderProgram & shaderProgram);
+	void createWord(string word, vector<Sprite*> &res, const glm::vec2 &pos, ShaderProgram & shaderProgram);
+	void createHearts(const glm::vec2 &pos, ShaderProgram & shaderProgram);
+	void createNumber(int num, int digitNumber, vector<Sprite*> &res, const glm::vec2 &pos, ShaderProgram & shaderProgram);
 };

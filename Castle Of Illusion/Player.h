@@ -28,6 +28,8 @@ public:
 private:
 	PlayerAction action;
 	bool picking;
+	bool holdingAttack;
+
 
 };
 

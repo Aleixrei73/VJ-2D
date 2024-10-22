@@ -52,6 +52,7 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 void Player::update(int deltaTime)
 {
 	sprite->update(deltaTime);
+	if (holdingAttack) holdingAttack = Game::instance().getKey(GLFW_KEY_C);
 
 	hitBox.y = 32;
 
@@ -85,7 +86,8 @@ void Player::update(int deltaTime)
 		}
 	}
 
-	else if (Game::instance().getKey(GLFW_KEY_S)) {
+	else if (!holdingAttack && (action == PlayerAction::FALLING || action == PlayerAction::JUMPING) && Game::instance().getKey(GLFW_KEY_C)) {
+		holdingAttack = true;
 		action = PlayerAction::ATTACKING;
 		velocity.y = 0;
 
@@ -182,7 +184,7 @@ void Player::update(int deltaTime)
 		
 		velocity.y += acceleration.y*deltaTime/10;
 
-		if (velocity.y >= MAX_FALL_VELOCITY) velocity.y = MAX_FALL_VELOCITY;
+		if (velocity.y > MAX_FALL_VELOCITY) velocity.y = MAX_FALL_VELOCITY;
 
 		position.y += int(velocity.y);
 

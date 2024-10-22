@@ -4,21 +4,29 @@
 
 void Consumable::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram) {
 
-	if (type == POINTS) spritesheet.loadFromFile("images/coin.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	else spritesheet.loadFromFile("images/barrilete.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(1/6.f, 1), &spritesheet, &shaderProgram);
-	
-	sprite->setNumberAnimations(1);
+	if (type == POINTS) {
+		spritesheet.loadFromFile("images/coin.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(1 / 6.f, 1), &spritesheet, &shaderProgram);
+		sprite->setNumberAnimations(1);
 
-	sprite->setAnimationSpeed(0, 8);
-	sprite->addKeyframe(0, glm::vec2(0.f, 0.f));
-	sprite->addKeyframe(0, glm::vec2(1.f / 6.f, 0.f));
-	sprite->addKeyframe(0, glm::vec2(2.f / 6.f, 0.f));
-	sprite->addKeyframe(0, glm::vec2(3.f / 6.f, 0.f));
-	sprite->addKeyframe(0, glm::vec2(4.f / 6.f, 0.f));
-	sprite->addKeyframe(0, glm::vec2(5.f / 6.f, 0.f));
+		sprite->setAnimationSpeed(0, 8);
+		sprite->addKeyframe(0, glm::vec2(0.f, 0.f));
+		sprite->addKeyframe(0, glm::vec2(1.f / 6.f, 0.f));
+		sprite->addKeyframe(0, glm::vec2(2.f / 6.f, 0.f));
+		sprite->addKeyframe(0, glm::vec2(3.f / 6.f, 0.f));
+		sprite->addKeyframe(0, glm::vec2(4.f / 6.f, 0.f));
+		sprite->addKeyframe(0, glm::vec2(5.f / 6.f, 0.f));
 
-	sprite->changeAnimation(0);
+		sprite->changeAnimation(0);
+	}
+	else {
+		spritesheet.loadFromFile("images/cake.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		sprite = Sprite::createSprite(glm::ivec2(16, 14), glm::vec2(1, 1), &spritesheet, &shaderProgram);
+		sprite->setNumberAnimations(1);
+		sprite->setAnimationSpeed(0, 8);
+		sprite->addKeyframe(0, glm::vec2(0.f, 0.f));
+		sprite->changeAnimation(0);
+	}
 
 	tileMapDispl = tileMapPos;
 	sprite->setPosition(glm::vec2(-1, -1));

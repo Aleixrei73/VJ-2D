@@ -62,7 +62,7 @@ void Scene::init()
 	barrels.push_back(barrel);
 
 	Chest *chest = new Chest();
-	chest->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, POINTS);
+	chest->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, LIFE);
 	chest->setPosition(glm::vec2(25 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	chest->setTileMap(map);
 	
@@ -162,7 +162,7 @@ void Scene::updateInteractions(Player *player, Enemy *enemy) {
 	gui->setScore(gui->getScore() + 100);
 	glm::ivec2 hitPosition = glm::ivec2(player->getPosition().x, enemy->getPosition().y) - glm::ivec2(0, enemy->getHitBox().y);
 	player->setPosition(hitPosition);
-	player->setJump(-5);
+	player->setJump(-7);
 	enemy->die();
 }
 
@@ -175,7 +175,7 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 			interacting = true;
 			barrel->setState(THROWED);
 			int direction = player->getVelocity().x > 0 ? 1 : -1;
-			glm::vec2 newVelocity = glm::vec2(10*direction, -10);
+			glm::vec2 newVelocity = glm::vec2(5*direction, -8);
 			if (player->getVelocity().x == 0) {
 				newVelocity.y = 0;
 				newVelocity.x = 0;
@@ -246,7 +246,7 @@ void Scene::updateInteractions(Player * player, Consumable * item) {
 			gui->setScore(gui->getScore() + 200);
 		}
 		else {
-			gui->setLives(max(4, gui->getLives()+1));
+			gui->setLives(min(4, gui->getLives()+1));
 		}
 		item->die();
 	}

@@ -40,6 +40,7 @@ private:
 	void checkKillCollision(Entity * killer, Entity * target);
 	Direction isCollision(Entity * player, Entity * enemy);
 	void updateScreen(int deltaTime);
+	void checkPlayerState();
 
 private:
 	TileMap *map;
@@ -54,7 +55,7 @@ private:
 	float currentTime;
 	glm::ivec2 cameraPos;
 	glm::mat4 projection;
-	bool interacting;
+	bool interacting, god, interactingGod;
 };
 
 

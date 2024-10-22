@@ -13,7 +13,7 @@ void GUI::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, int
 	tries = 3;
 	amplitude = amp;
 	tileGap = amplitude / 4.f;
-
+	timeTimer = 0;
 
 	//Texture initialitation
 
@@ -136,7 +136,7 @@ void GUI::render() {
 	}
 }
 
-void GUI::update(const glm::vec2 & newPos) {
+void GUI::update(const glm::vec2 & newPos, int deltaTime) {
 
 	background->setPosition(newPos);
 
@@ -156,6 +156,13 @@ void GUI::update(const glm::vec2 & newPos) {
 	shiftSprite = (tileGap*TILE_SIZE - 3 * 5) / 2.f;
 	glm::vec2 timePos = scorePos + glm::vec2(tileGap * TILE_SIZE, 0);
 	glm::vec2 timeNumPos = glm::vec2(-shiftLetters + shiftSprite + timePos.x, -2 * TILE_SIZE + newPos.y - 9 / 2.f + 1);
+
+	timeTimer += deltaTime;
+
+	while (timeTimer >= 1000) {
+		timeTimer -= 1000;
+		timeLeft -= 1;
+	}
 
 
 	//Lives update

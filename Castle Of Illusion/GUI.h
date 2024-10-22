@@ -16,7 +16,7 @@ public:
 
 	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, int amp);
 	void render();
-	void update(const glm::vec2 &newPos);
+	void update(const glm::vec2 &newPos, int deltaTime);
 
 	int getLives();
 	int getScore();
@@ -39,6 +39,7 @@ private:
 	Texture backgroundColor, font, heart;
 	int amplitude;
 	float tileGap;
+	float timeTimer;
 
 	Sprite* createLetter(char letter, const glm::vec2 &pos, ShaderProgram & shaderProgram);
 	void createWord(string word, vector<Sprite*> &res, const glm::vec2 &pos, ShaderProgram & shaderProgram);

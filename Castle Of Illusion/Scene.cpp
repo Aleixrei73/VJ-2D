@@ -32,6 +32,11 @@ Scene::~Scene()
 
 void Scene::init()
 {
+
+	interacting = false;
+	god = false;
+	interactingGod = false;
+
 	initShaders();
 	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 
@@ -117,7 +122,30 @@ void Scene::updateScreen(int deltaTime) {
 	}
 
 	projection = glm::ortho(cameraLeft, cameraRight, float(10*map->getTileSize()), 0.f);
-	gui->update(glm::vec2(cameraLeft, 10 * map->getTileSize()));
+
+	gui->update(glm::vec2(cameraLeft, 10 * map->getTileSize()), deltaTime);
+
+}
+
+void Scene::checkPlayerState() {
+
+	if (gui->getLives() == 0) {
+		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+		player->setVelocity(glm::vec2(0,0));
+		gui->setTries(gui->getTries() - 1);
+		gui->setTimeLeft(200);
+		gui->setLives(4);
+		return;
+	}
+
+	if (gui->getTimeLeft() <= 0) {
+		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+		player->setVelocity(glm::vec2(0, 0));
+		gui->setTries(gui->getTries() - 1);
+		gui->setTimeLeft(200);
+		gui->setLives(4);
+		return;
+	}
 
 }
 
@@ -126,16 +154,9 @@ void Scene::updateInteractions(Player *player, Enemy *enemy) {
 
 	if (dir == NONE) return;
 
-	if (player->getAction() != PlayerAction::ATTACKING || dir != UP) {
+	if ( (player->getAction() != PlayerAction::ATTACKING || dir != UP) && !god) {
 
 		gui->setLives(gui->getLives() - 1);
-
-		if (gui->getLives() == 0) {
-			player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-			gui->setTries(gui->getTries() - 1);
-			gui->setLives(4);
-			return;
-		}
 
 		if (dir == LEFT) {
 			player->setHorizontalVelocity(-7);
@@ -159,11 +180,13 @@ void Scene::updateInteractions(Player *player, Enemy *enemy) {
 		}
 	}
 
-	gui->setScore(gui->getScore() + 100);
-	glm::ivec2 hitPosition = glm::ivec2(player->getPosition().x, enemy->getPosition().y) - glm::ivec2(0, enemy->getHitBox().y);
-	player->setPosition(hitPosition);
-	player->setJump(-7);
-	enemy->die();
+	if (player->getAction() == PlayerAction::ATTACKING && dir == UP) {
+		gui->setScore(gui->getScore() + 100);
+		glm::ivec2 hitPosition = glm::ivec2(player->getPosition().x, enemy->getPosition().y) - glm::ivec2(0, enemy->getHitBox().y);
+		player->setPosition(hitPosition);
+		player->setJump(-7);
+		enemy->die();
+	}
 }
 
 void Scene::updateInteractions(Player * player, Barrel * barrel) {
@@ -254,13 +277,22 @@ void Scene::updateInteractions(Player * player, Consumable * item) {
 
 void Scene::checkKillCollision(Entity * killer, Entity * target) {
 	Direction dir = isCollision(killer, target);
-	if (dir != NONE) target->die();
+	if (dir != NONE) {
+		target->die();
+		gui->setScore(gui->getScore() + 100);
+	}
 }
 
 void Scene::update(int deltaTime) {
 
 	currentTime += deltaTime;
 	if (interacting) interacting = Game::instance().getKey(GLFW_KEY_V);
+	if (interactingGod) interactingGod = Game::instance().getKey(GLFW_KEY_G);
+
+	if (!interactingGod && Game::instance().getKey(GLFW_KEY_G)) {
+		god = !god;
+		interactingGod = true;
+	}
 
 	//Updates all entites and its collides with the player
 
@@ -290,7 +322,7 @@ void Scene::update(int deltaTime) {
 
 	for (Enemy* enemy : enemies) {
 		for (Barrel* barrel : barrels) {
-			if (barrel->getState() == THROWED) checkKillCollision(barrel, enemy);
+			if (barrel->getState() == THROWED && !enemy->isDying()) checkKillCollision(barrel, enemy);
 		}
 	}
 
@@ -316,6 +348,9 @@ void Scene::update(int deltaTime) {
 		if (items[i]->isDead()) items.erase(items.begin() + i);
 	}
 
+	if (Game::instance().getKey(GLFW_KEY_H)) gui->setLives(4);
+
+	checkPlayerState();
 	updateScreen(deltaTime);
 }
 

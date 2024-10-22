@@ -58,7 +58,7 @@ void Player::update(int deltaTime)
 
 	if (action == PlayerAction::ATTACKING) {
 
-		velocity.y = velocity.y + acceleration.y * 5;
+		velocity.y = velocity.y + acceleration.y * 3;
 
 		if (velocity.y > (MAX_FALL_VELOCITY + 3)) velocity.y = MAX_FALL_VELOCITY + 3;
 
@@ -73,9 +73,6 @@ void Player::update(int deltaTime)
 	else if (Game::instance().getKey(GLFW_KEY_S) && action == PlayerAction::GROUNDED) {
 
 		hitBox.y = 16;
-
-		velocity.x = 0;
-		velocity.y = 0;
 
 		if (sprite->animation() == MOVE_LEFT) {
 			sprite->changeAnimation(STAND_LEFT);

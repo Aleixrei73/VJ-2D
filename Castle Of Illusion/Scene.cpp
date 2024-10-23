@@ -153,6 +153,16 @@ void Scene::checkPlayerState() {
 		return;
 	}
 
+	if (player->isDead()) {
+		player->setDeath(false);
+		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+		player->setVelocity(glm::vec2(0, 0));
+		gui->setTries(gui->getTries() - 1);
+		gui->setTimeLeft(200);
+		gui->setLives(4);
+		return;
+	}
+
 }
 
 void Scene::updateInteractions(Player *player, Enemy *enemy) {

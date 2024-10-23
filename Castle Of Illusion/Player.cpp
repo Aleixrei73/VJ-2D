@@ -52,11 +52,16 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 void Player::update(int deltaTime)
 {
 
+	if (position.y >= *mapEdge) {
+		dying = true;
+	}
+
 	if (dying) {
 		velocity.y += acceleration.y *deltaTime / 10;
 		position.y += int(velocity.y);
 		if (position.y - hitBox.y > *mapEdge) {
 			death = true;
+			dying = false;
 		}
 		sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
 		return;

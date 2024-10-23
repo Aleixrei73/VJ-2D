@@ -1,3 +1,4 @@
-﻿  Scene.cpp
+﻿  Player.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\castle of illusion\castle of illusion\castle of illusion\player.cpp(243): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
   Castle Of Illusion.vcxproj -> C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\Castle Of Illusion\Castle Of Illusion\Debug\Castle Of Illusion.exe
   Castle Of Illusion.vcxproj -> C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\Castle Of Illusion\Castle Of Illusion\Debug\Castle Of Illusion.pdb (Partial PDB)

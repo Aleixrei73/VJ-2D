@@ -37,6 +37,10 @@ void Entity::setEdgePointer(int * edge) {
 	mapEdge = edge;
 }
 
+void Entity::setDeath(bool dead) {
+	death = dead;
+}
+
 void Entity::die() {
 	return;
 }

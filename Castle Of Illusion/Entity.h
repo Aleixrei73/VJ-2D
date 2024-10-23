@@ -16,6 +16,7 @@ public:
 	void setVerticalVelocity(float vel);
 	void setAcceleration(const glm::vec2 &acc);
 	void setEdgePointer(int *edge);
+	void setDeath(bool dead);
 	virtual void die();
 
 	glm::ivec2 getHitBox() const;

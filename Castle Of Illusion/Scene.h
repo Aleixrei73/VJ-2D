@@ -56,6 +56,7 @@ private:
 	glm::ivec2 cameraPos;
 	glm::mat4 projection;
 	bool interacting, god, interactingGod;
+	int playableEdge;
 };
 
 

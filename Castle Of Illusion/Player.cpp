@@ -51,6 +51,18 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 
 void Player::update(int deltaTime)
 {
+
+	if (dying) {
+		velocity.y += acceleration.y *deltaTime / 10;
+		position.y += int(velocity.y);
+		if (position.y - hitBox.y > *mapEdge) {
+			death = true;
+		}
+		sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
+		return;
+	}
+
+
 	sprite->update(deltaTime);
 	if (holdingAttack) holdingAttack = Game::instance().getKey(GLFW_KEY_C);
 
@@ -236,6 +248,11 @@ void Player::setAction(PlayerAction act) {
 
 bool Player::isPicking() {
 	return picking;
+}
+
+void Player::die() {
+	dying = true;
+	velocity.y = -7;
 }
 
 PlayerAction Player::getAction()

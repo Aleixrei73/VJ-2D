@@ -22,6 +22,7 @@ public:
 	void setPicking(bool pick);
 	void setAction(PlayerAction act);
 	bool isPicking();
+	void die() override;
 
 	PlayerAction getAction();
 	

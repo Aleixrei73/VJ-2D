@@ -15,6 +15,7 @@ public:
 	void setHorizontalVelocity(float vel);
 	void setVerticalVelocity(float vel);
 	void setAcceleration(const glm::vec2 &acc);
+	void setEdgePointer(int *edge);
 	virtual void die();
 
 	glm::ivec2 getHitBox() const;
@@ -27,6 +28,7 @@ public:
 protected:
 	glm::ivec2 tileMapDispl, position, hitBox;
 	glm::vec2 velocity, acceleration;
+	int *mapEdge;
 	Texture spritesheet;
 	Sprite *sprite;
 	TileMap *map;

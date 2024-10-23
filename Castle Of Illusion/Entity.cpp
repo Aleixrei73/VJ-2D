@@ -33,6 +33,10 @@ void Entity::setAcceleration(const glm::vec2 & acc)
 	acceleration.y = acc.y;
 }
 
+void Entity::setEdgePointer(int * edge) {
+	mapEdge = edge;
+}
+
 void Entity::die() {
 	return;
 }

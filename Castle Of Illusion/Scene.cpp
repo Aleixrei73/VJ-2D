@@ -40,6 +40,8 @@ void Scene::init()
 	initShaders();
 	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 
+	playableEdge = 7 * map->getTileSize();
+
 	background = new Background();
 	background->init(glm::ivec2(0, float(7 * map->getTileSize())), texProgram);
 
@@ -50,12 +52,14 @@ void Scene::init()
 	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	player->setTileMap(map);
+	player->setEdgePointer(&playableEdge);
 
 	Enemy *enemy = new Enemy();
 	enemy->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
 	enemy->setPosition(glm::vec2(45 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	enemy->setTileMap(map);
 	enemy->setHorizontalVelocity(-1);
+	enemy->setEdgePointer(&playableEdge);
 	
 	enemies.push_back(enemy);
 
@@ -63,6 +67,7 @@ void Scene::init()
 	barrel->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
 	barrel->setPosition(glm::vec2(30 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	barrel->setTileMap(map);
+	barrel->setEdgePointer(&playableEdge);
 	
 	barrels.push_back(barrel);
 
@@ -70,10 +75,11 @@ void Scene::init()
 	chest->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, LIFE);
 	chest->setPosition(glm::vec2(25 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	chest->setTileMap(map);
+	chest->setEdgePointer(&playableEdge);
 	
 	chests.push_back(chest);
 
-	projection = glm::ortho(0.f, float(SCREEN_WIDTH) - 16 * map->getTileSize(), 2*float(SCREEN_HEIGHT) + 10*map->getTileSize(),0.f);
+	projection = glm::ortho(0.f, float(SCREEN_WIDTH) - 16 * map->getTileSize(), float(playableEdge + 3 * map->getTileSize()),0.f);
 
 	currentTime = 0.0f;
 }
@@ -121,7 +127,7 @@ void Scene::updateScreen(int deltaTime) {
 		cameraLeft = cameraRight - 2*AMPLITUDE * map->getTileSize();
 	}
 
-	projection = glm::ortho(cameraLeft, cameraRight, float(10*map->getTileSize()), 0.f);
+	projection = glm::ortho(cameraLeft, cameraRight, float(playableEdge + 3*map->getTileSize()), 0.f);
 
 	gui->update(glm::vec2(cameraLeft, 10 * map->getTileSize()), deltaTime);
 

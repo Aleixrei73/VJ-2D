@@ -13,32 +13,71 @@
 
 enum PlayerAnims
 {
-	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT
+	STAND_LEFT, STAND_RIGHT, 
+	MOVE_LEFT, MOVE_RIGHT, 
+	ATTACK_LEFT, ATTACK_RIGHT,
+	CROUCH_LEFT, CROUCH_RIGHT,
+	JUMP_LEFT, JUMP_RIGHT, 
+	THROW_LEFT, THROW_RIGHT,
+	PICK_LEFT, PICK_RIGHT,
+	MOVE_PICK_LEFT, MOVE_PICK_RIGHT,
+	JUMP_PICK_LEFT, JUMP_PICK_RIGHT,
+	DRIFT_LEFT, DRIFT_RIGHT
 };
 
 
 void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 {
+	float sprite_x_space = 1.f / 15;
+	float sprite_y_space = 1.f / 14;
+
 	action = PlayerAction::GROUNDED;
-	spritesheet.loadFromFile("images/bub.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(0.25, 0.25), &spritesheet, &shaderProgram);
-	sprite->setNumberAnimations(4);
+	spritesheet.loadFromFile("images/player.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	sprite = Sprite::createSprite(glm::ivec2(32, 36), glm::vec2(1.f/15, 1.f / 14), &spritesheet, &shaderProgram);
+	sprite->setNumberAnimations(20);
 	
-		sprite->setAnimationSpeed(STAND_LEFT, 8);
-		sprite->addKeyframe(STAND_LEFT, glm::vec2(0.f, 0.f));
+	float spriteShift_x = 0;
+	float spriteShift_y = 0;
+
+		sprite->setAnimationSpeed(STAND_RIGHT, 2);
+		sprite->addKeyframe(STAND_RIGHT, glm::vec2(0.f, 0.f));
+		sprite->addKeyframe(STAND_RIGHT, glm::vec2(sprite_x_space, 0.f));
 		
-		sprite->setAnimationSpeed(STAND_RIGHT, 8);
-		sprite->addKeyframe(STAND_RIGHT, glm::vec2(0.25f, 0.f));
-		
-		sprite->setAnimationSpeed(MOVE_LEFT, 8);
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.f));
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.25f));
-		sprite->addKeyframe(MOVE_LEFT, glm::vec2(0.f, 0.5f));
-		
+		sprite->setAnimationSpeed(STAND_LEFT, 2);
+		sprite->addKeyframe(STAND_LEFT, glm::vec2(0.f, 0.5f));
+		sprite->addKeyframe(STAND_LEFT, glm::vec2(sprite_x_space, 0.5f));
+
+		spriteShift_x = 2*sprite_x_space;
+		spriteShift_y = 0;
+
 		sprite->setAnimationSpeed(MOVE_RIGHT, 8);
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25, 0.f));
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25, 0.25f));
-		sprite->addKeyframe(MOVE_RIGHT, glm::vec2(0.25, 0.5f));
+
+		for (int i = 1; i < 8; i++) {
+			sprite->addKeyframe(MOVE_RIGHT, glm::vec2(spriteShift_x + sprite_x_space*i, spriteShift_y));
+		}
+
+		sprite->setAnimationSpeed(MOVE_LEFT, 8);
+
+		for (int i = 0; i < 8; i++) {
+			sprite->addKeyframe(MOVE_LEFT, glm::vec2(spriteShift_x + sprite_x_space*i, 0.5f + spriteShift_y));
+		}
+
+		sprite->setAnimationSpeed(ATTACK_RIGHT, 8);
+
+		spriteShift_x = 5 * sprite_x_space;
+		spriteShift_y = sprite_y_space;
+
+		for (int i = 0; i < 2; i++) {
+			sprite->addKeyframe(ATTACK_RIGHT, glm::vec2(spriteShift_x + sprite_x_space*i, spriteShift_y));
+		}
+
+		sprite->setAnimationSpeed(ATTACK_LEFT, 8);
+
+		for (int i = 0; i < 8; i++) {
+			sprite->addKeyframe(ATTACK_LEFT, glm::vec2(spriteShift_x + sprite_x_space*i, 0.5f + spriteShift_y));
+		}
+
+		
 		
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;

@@ -29,7 +29,6 @@ Scene::~Scene()
 		delete player;
 }
 
-
 void Scene::init()
 {
 

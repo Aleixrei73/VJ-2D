@@ -73,9 +73,41 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 
 		sprite->setAnimationSpeed(ATTACK_LEFT, 8);
 
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 2; i++) {
 			sprite->addKeyframe(ATTACK_LEFT, glm::vec2(spriteShift_x + sprite_x_space*i, 0.5f + spriteShift_y));
 		}
+
+		sprite->setAnimationSpeed(CROUCH_RIGHT, 8);
+
+		spriteShift_x =0;
+		spriteShift_y = sprite_y_space;
+
+		for (int i = 0; i < 2; i++) {
+			sprite->addKeyframe(CROUCH_RIGHT, glm::vec2(spriteShift_x + sprite_x_space*i, spriteShift_y));
+		}
+
+		sprite->setAnimationSpeed(CROUCH_LEFT, 8);
+
+		for (int i = 0; i < 2; i++) {
+			sprite->addKeyframe(CROUCH_LEFT, glm::vec2(spriteShift_x + sprite_x_space*i, 0.5f + spriteShift_y));
+		}
+
+		sprite->setAnimationSpeed(JUMP_RIGHT, 8);
+
+		spriteShift_x = sprite_x_space*2;
+		spriteShift_y = sprite_y_space;
+
+		for (int i = 0; i < 1; i++) {
+			sprite->addKeyframe(JUMP_RIGHT, glm::vec2(spriteShift_x + sprite_x_space*i, spriteShift_y));
+		}
+
+		sprite->setAnimationSpeed(JUMP_LEFT, 8);
+
+		for (int i = 0; i < 1; i++) {
+			sprite->addKeyframe(JUMP_LEFT, glm::vec2(spriteShift_x + sprite_x_space*i, 0.5f + spriteShift_y));
+		}
+
+
 
 		
 		

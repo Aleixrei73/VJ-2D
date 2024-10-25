@@ -3,17 +3,31 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "Cosa.tmx",
+    "activeFile": "C:/Users/aleix/OneDrive/Escritorio/Uni/VJ/Castle Of Illusion/Castle Of Illusion/tuto.tmx",
     "expandedProjectPaths": [
         "."
     ],
     "fileStates": {
+        "C:/Users/aleix/OneDrive/Escritorio/Uni/VJ/Castle Of Illusion/Castle Of Illusion/CastleTiles.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/aleix/OneDrive/Escritorio/Uni/VJ/Castle Of Illusion/Castle Of Illusion/tuto.tmx": {
+            "scale": 0.259765625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 1599.5187969924812,
+                "y": 334.91729323308255
+            }
+        },
+        "C:/Users/aleix/OneDrive/Escritorio/Uni/VJ/Castle Of Illusion/Castle Of Illusion/tuto.tsx": {
+            "scaleInDock": 1
+        },
         "Cosa.tmx": {
             "scale": 0.5,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 643,
-                "y": -108
+                "x": 1669,
+                "y": 110
             }
         },
         "TX Tileset Ground.tsx": {
@@ -29,12 +43,14 @@
     "map.width": 100,
     "openFiles": [
         "Cosa.tmx",
-        "TX Tileset Ground.tsx"
+        "TX Tileset Ground.tsx",
+        "C:/Users/aleix/OneDrive/Escritorio/Uni/VJ/Castle Of Illusion/Castle Of Illusion/tuto.tmx"
     ],
     "project": "Hola.tiled-project",
     "recentFiles": [
+        "Cosa.tmx",
         "TX Tileset Ground.tsx",
-        "Cosa.tmx"
+        "C:/Users/aleix/OneDrive/Escritorio/Uni/VJ/Castle Of Illusion/Castle Of Illusion/tuto.tmx"
     ],
     "tileset.lastUsedFormat": "tsx"
 }

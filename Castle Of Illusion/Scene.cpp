@@ -113,7 +113,7 @@ Direction Scene::isCollision(Entity *player, Entity *enemy) {
 
 void Scene::updateScreen(int deltaTime) {
 
-	float cameraShift = player->getVelocity().x / 3.f * map->getTileSize()/4.f;
+	float cameraShift = 0;
 	float cameraLeft = float(player->getPosition().x) - AMPLITUDE * map->getTileSize() + cameraShift + 16;
 	float cameraRight = float(player->getPosition().x) + AMPLITUDE * map->getTileSize() + cameraShift + 16;
 
@@ -213,7 +213,7 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 			interacting = true;
 			barrel->setState(THROWED);
 			int direction = player->getVelocity().x > 0 ? 1 : -1;
-			glm::vec2 newVelocity = glm::vec2(5*direction, -8);
+			glm::vec2 newVelocity = glm::vec2(5*direction, -6);
 			if (player->getVelocity().x == 0) {
 				newVelocity.y = 0;
 				newVelocity.x = 0;
@@ -239,6 +239,7 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 		glm::ivec2 newPosition = glm::ivec2(player->getPosition().x, barrel->getPosition().y - barrel->getHitBox().y);
 		player->setPosition(newPosition);
 		player->setAction(PlayerAction::GROUNDED);
+		if (!player->playerInSurface())player->setStanding();
 		//We must check if player needs to jump since the player update will make it think it is in the air
 		if (Game::instance().getKey(GLFW_KEY_SPACE)) {
 			player->setAction(PlayerAction::JUMPING);
@@ -267,6 +268,7 @@ void Scene::updateInteractions(Player * player, Chest * chest) {
 		glm::ivec2 newPosition = glm::ivec2(player->getPosition().x, chest->getPosition().y - chest->getHitBox().y);
 		player->setPosition(newPosition);
 		player->setAction(PlayerAction::GROUNDED);
+		if (!player->playerInSurface())player->setStanding();
 		//We must check if player needs to jump since the player update will make it think it is in the air
 		if (Game::instance().getKey(GLFW_KEY_SPACE)) {
 			player->setAction(PlayerAction::JUMPING);

@@ -305,7 +305,7 @@ void Player::update(int deltaTime)
 			 
 			else if(Game::instance().getKey(GLFW_KEY_SPACE)) {
 				action = PlayerAction::JUMPING;
-				velocity.y = -MAX_FALL_VELOCITY;
+				velocity.y = -8;
 
 				if (animation % 2 == 0) {
 					if (picking) sprite->changeAnimation(JUMP_PICK_RIGHT);
@@ -355,6 +355,27 @@ void Player::setPicking(bool pick) {
 
 void Player::setAction(PlayerAction act) {
 	action = act;
+}
+
+void Player::setStanding() {
+
+	int anim = sprite->animation();
+
+	if (picking) {
+		if ( anim%2 == 0 && sprite->animation() != PICK_RIGHT) sprite->changeAnimation(PICK_RIGHT);
+		else if (anim % 2 != 0 && sprite->animation() != PICK_LEFT) sprite->changeAnimation(PICK_LEFT);
+	}
+	else {
+		if (anim % 2 == 0 && sprite->animation() != STAND_RIGHT) sprite->changeAnimation(STAND_RIGHT);
+		else if (anim % 2 != 0 && sprite->animation() != STAND_LEFT) sprite->changeAnimation(STAND_LEFT);
+	}
+}
+
+bool Player::playerInSurface() {
+	int anim = sprite->animation();
+	bool surfaced = anim == MOVE_RIGHT || anim == MOVE_LEFT || anim == STAND_RIGHT || anim == STAND_LEFT || anim==DRIFT_LEFT ||anim==DRIFT_RIGHT;
+	surfaced = surfaced || anim == PICK_LEFT || anim == PICK_RIGHT || anim == MOVE_PICK_LEFT || anim == MOVE_PICK_RIGHT ||anim==DRIFT_PICK_LEFT ||anim==DRIFT_PICK_RIGHT;
+	return surfaced;
 }
 
 bool Player::isPicking() {

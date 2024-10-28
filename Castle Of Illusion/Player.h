@@ -36,6 +36,8 @@ public:
 	void setJump(int vel);
 	void setPicking(bool pick);
 	void setAction(PlayerAction act);
+	void setStanding();
+	bool playerInSurface();
 	bool isPicking();
 	void die() override;
 

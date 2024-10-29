@@ -243,7 +243,7 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 		//We must check if player needs to jump since the player update will make it think it is in the air
 		if (Game::instance().getKey(GLFW_KEY_SPACE)) {
 			player->setAction(PlayerAction::JUMPING);
-			player->setVerticalVelocity(-7.0);
+			player->setVerticalVelocity(-8.0);
 		}
 	}
 }
@@ -255,7 +255,7 @@ void Scene::updateInteractions(Player * player, Chest * chest) {
 	if (player->getAction() == PlayerAction::ATTACKING && dir == UP) {
 		glm::ivec2 hitPosition = glm::ivec2(player->getPosition().x, chest->getPosition().y) - glm::ivec2(0, chest->getHitBox().y);
 		player->setPosition(hitPosition);
-		player->setJump(-5);
+		player->setJump(-7);
 		Consumable *item = chest->open();
 		item->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram); 
 		item->setTileMap(map);

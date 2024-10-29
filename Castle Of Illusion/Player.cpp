@@ -49,7 +49,7 @@ void Player::update(int deltaTime)
 
 
 	sprite->update(deltaTime);
-	if (holdingAttack) holdingAttack = Game::instance().getKey(GLFW_KEY_C);
+	if (holdingAttack) holdingAttack = Game::instance().getKey(GLFW_KEY_S);
 
 	hitBox.y = 32;
 
@@ -67,7 +67,7 @@ void Player::update(int deltaTime)
 		}
 	}
 
-	else if (!holdingAttack && (action == PlayerAction::FALLING || action == PlayerAction::JUMPING) && Game::instance().getKey(GLFW_KEY_C)) {
+	else if (!holdingAttack && (action == PlayerAction::FALLING || action == PlayerAction::JUMPING) && Game::instance().getKey(GLFW_KEY_S)) {
 		holdingAttack = true;
 		action = PlayerAction::ATTACKING;
 		velocity.y = 0;
@@ -233,6 +233,18 @@ void Player::update(int deltaTime)
 	
 	if(action == PlayerAction::JUMPING)
 	{
+
+		int anim = sprite->animation();
+
+		if (picking) {
+			if (anim % 2 == 0 && sprite->animation() != JUMP_PICK_RIGHT) sprite->changeAnimation(JUMP_PICK_RIGHT);
+			else if (anim % 2 != 0 && sprite->animation() != JUMP_PICK_LEFT) sprite->changeAnimation(JUMP_PICK_LEFT);
+		}
+		else {
+			if (anim % 2 == 0 && sprite->animation() != JUMP_RIGHT) sprite->changeAnimation(JUMP_RIGHT);
+			else if (anim % 2 != 0 && sprite->animation() != JUMP_LEFT) sprite->changeAnimation(JUMP_LEFT);
+		}
+
 		velocity.y += acceleration.y*deltaTime/10;
 
 		position.y += int(velocity.y);
@@ -285,7 +297,7 @@ void Player::update(int deltaTime)
 
 			int animation = sprite->animation();
 
-			if (Game::instance().getKey(GLFW_KEY_S)) {
+			if (!holdingAttack && Game::instance().getKey(GLFW_KEY_S)) {
 				hitBox.y = 16;
 				velocity.x = 0;
 				velocity.y = 0;
@@ -345,7 +357,7 @@ void Player::render()
 }
 
 void Player::setJump(int vel) {
-	action = PlayerAction::FALLING;
+	action = PlayerAction::JUMPING;
 	velocity.y = vel;
 }
 

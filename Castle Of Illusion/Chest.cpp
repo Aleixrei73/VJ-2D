@@ -5,6 +5,10 @@ enum ChestAnims
 	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT
 };
 
+Chest::~Chest() {
+	delete item;
+}
+
 void Chest::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, ConsumableType itemType) {
 	spritesheet.loadFromFile("images/chest.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(1, 1), &spritesheet, &shaderProgram);

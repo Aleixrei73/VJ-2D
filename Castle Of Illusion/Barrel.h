@@ -8,6 +8,7 @@ class Barrel : public Entity {
 
 public:
 
+	~Barrel();
 	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, bool explosive);
 	void update(int deltaTime);
 	void render();

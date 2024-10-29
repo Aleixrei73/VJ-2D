@@ -12,6 +12,7 @@
 #include "Consumable.h"
 #include "Background.h"
 #include "GUI.h"
+#include "Flor.h"
 
 
 // Scene contains all the entities of our game.
@@ -41,6 +42,10 @@ private:
 	Direction isCollision(Entity * player, Entity * enemy);
 	void updateScreen(int deltaTime);
 	void checkPlayerState();
+	void checkShoots(Player *player, Flor* flower);
+	void restart();
+	void deleteEntities();
+	void initEntities();
 
 private:
 	TileMap *map;
@@ -51,6 +56,7 @@ private:
 	vector<Barrel*> barrels;
 	vector<Chest*> chests;
 	vector<Consumable *> items;
+	vector<Flor*> flowers;
 	ShaderProgram texProgram;
 	float currentTime;
 	glm::ivec2 cameraPos;

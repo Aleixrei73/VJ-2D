@@ -102,4 +102,9 @@ void Enemy::die() {
 	velocity.y = -7;
 }
 
+bool Enemy::isFlower()
+{
+	return false;
+}
+
 

@@ -7,6 +7,10 @@ enum BarrelAnims
 	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT
 };
 
+Barrel::~Barrel() {
+	delete sprite;
+}
+
 void Barrel::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, bool expl) {
 
 	spritesheet.loadFromFile("images/barrilete.png", TEXTURE_PIXEL_FORMAT_RGBA);

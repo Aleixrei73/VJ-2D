@@ -7,10 +7,11 @@ class Enemy : public Entity
 {
 
 public:
-	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram);
-	void update(int deltaTime);
-	void render();
+	virtual void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram);
+	virtual void update(int deltaTime);
+	virtual void render();
 	void die() override;
+	virtual bool isFlower();
 
 private:
 

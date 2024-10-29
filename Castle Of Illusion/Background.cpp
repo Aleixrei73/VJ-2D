@@ -2,8 +2,8 @@
 
 void Background::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram) {
 
-	spritesheet.loadFromFile("images/Background.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(100*32, 32*7), glm::vec2(1, 1), &spritesheet, &shaderProgram);
+	spritesheet.loadFromFile("images/FONDO.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	sprite = Sprite::createSprite(glm::ivec2(100*32, 32*7*3), glm::vec2(1, 1), &spritesheet, &shaderProgram);
 
 	sprite->setNumberAnimations(1);
 

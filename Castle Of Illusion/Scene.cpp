@@ -47,36 +47,7 @@ void Scene::init()
 	gui = new GUI();
 	gui->init(glm::ivec2(SCREEN_X, 10 * map->getTileSize()), texProgram, AMPLITUDE*2);
 	
-	player = new Player();
-	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-	player->setTileMap(map);
-	player->setEdgePointer(&playableEdge);
-
-	Enemy *enemy = new Enemy();
-	enemy->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	enemy->setPosition(glm::vec2(45 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-	enemy->setTileMap(map);
-	enemy->setHorizontalVelocity(-1);
-	enemy->setEdgePointer(&playableEdge);
-	
-	enemies.push_back(enemy);
-
-	Barrel *barrel = new Barrel();
-	barrel->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
-	barrel->setPosition(glm::vec2(30 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-	barrel->setTileMap(map);
-	barrel->setEdgePointer(&playableEdge);
-	
-	barrels.push_back(barrel);
-
-	Chest *chest = new Chest();
-	chest->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, LIFE);
-	chest->setPosition(glm::vec2(25 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-	chest->setTileMap(map);
-	chest->setEdgePointer(&playableEdge);
-	
-	chests.push_back(chest);
+	initEntities();
 
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH) - 16 * map->getTileSize(), float(playableEdge + 3 * map->getTileSize()),0.f);
 
@@ -135,33 +106,111 @@ void Scene::updateScreen(int deltaTime) {
 void Scene::checkPlayerState() {
 
 	if (gui->getLives() == 0) {
-		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-		player->setVelocity(glm::vec2(0,0));
-		gui->setTries(gui->getTries() - 1);
-		gui->setTimeLeft(200);
-		gui->setLives(4);
+		restart();
 		return;
 	}
 
 	if (gui->getTimeLeft() <= 0) {
-		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-		player->setVelocity(glm::vec2(0, 0));
-		gui->setTries(gui->getTries() - 1);
-		gui->setTimeLeft(200);
-		gui->setLives(4);
+		restart();
 		return;
 	}
 
 	if (player->isDead()) {
-		player->setDeath(false);
-		player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-		player->setVelocity(glm::vec2(0, 0));
-		gui->setTries(gui->getTries() - 1);
-		gui->setTimeLeft(200);
-		gui->setLives(4);
+		restart(); 
 		return;
 	}
 
+}
+
+void Scene::checkShoots(Player * player, Flor * flower) {
+	vector<Projectile*> projectiles = flower->getProjectiles();
+
+	for (Projectile* proj : projectiles) {
+		updateInteractions(player, proj);
+	}
+}
+
+void Scene::restart() {
+
+	deleteEntities();
+
+	initEntities();
+
+	player->setDeath(false);
+	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	player->setVelocity(glm::vec2(0, 0));
+	gui->setTries(gui->getTries() - 1);
+	gui->setTimeLeft(200);
+	gui->setLives(4);
+
+}
+
+void Scene::deleteEntities() {
+
+	for (int i = enemies.size() - 1; i > -1; i--) {
+		delete enemies[i];
+		enemies.pop_back();
+	}
+
+	for (int i = barrels.size() - 1; i > -1; i--) {
+		delete barrels[i];
+		barrels.pop_back();
+	}
+
+	for (int i = flowers.size() - 1; i > -1; i--) {
+		delete flowers[i];
+		flowers.pop_back();
+	}
+
+	for (int i = chests.size() - 1; i > -1; i--) {
+		delete chests[i];
+		chests.pop_back();
+	}
+
+	for (int i = items.size() - 1; i > -1; i--) {
+		delete items[i];
+		items.pop_back();
+	}
+}
+
+void Scene::initEntities() {
+	player = new Player();
+	player->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	player->setTileMap(map);
+	player->setEdgePointer(&playableEdge);
+
+	Enemy *enemy = new Enemy();
+	enemy->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	enemy->setPosition(glm::vec2(45 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	enemy->setTileMap(map);
+	enemy->setHorizontalVelocity(-1);
+	enemy->setEdgePointer(&playableEdge);
+
+	enemies.push_back(enemy);
+
+	Flor *flor = new Flor();
+	flor->setEdgePointer(&playableEdge);
+	flor->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, player);
+	flor->setPosition(glm::vec2(4 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	flor->setTileMap(map);
+	flowers.push_back(flor);
+
+	Barrel *barrel = new Barrel();
+	barrel->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
+	barrel->setPosition(glm::vec2(30 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	barrel->setTileMap(map);
+	barrel->setEdgePointer(&playableEdge);
+
+	barrels.push_back(barrel);
+
+	Chest *chest = new Chest();
+	chest->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, LIFE);
+	chest->setPosition(glm::vec2(25 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	chest->setTileMap(map);
+	chest->setEdgePointer(&playableEdge);
+
+	chests.push_back(chest);
 }
 
 void Scene::updateInteractions(Player *player, Enemy *enemy) {
@@ -174,14 +223,14 @@ void Scene::updateInteractions(Player *player, Enemy *enemy) {
 		gui->setLives(gui->getLives() - 1);
 
 		if (dir == LEFT) {
-			player->setHorizontalVelocity(-7);
+			player->setHorizontalVelocity(-4);
 			glm::ivec2 hitPosition = glm::ivec2(enemy->getPosition().x, player->getPosition().y) - glm::ivec2(player->getHitBox().x, 0);
 			player->setPosition(hitPosition);
 			return;
 		}
 
 		if (dir == RIGHT) {
-			player->setHorizontalVelocity(7);
+			player->setHorizontalVelocity(4);
 			glm::ivec2 hitPosition = glm::ivec2(enemy->getPosition().x, player->getPosition().y) + glm::ivec2(enemy->getHitBox().x,0);
 			player->setPosition(hitPosition);
 			return;
@@ -213,7 +262,7 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 			interacting = true;
 			barrel->setState(THROWED);
 			int direction = player->getVelocity().x > 0 ? 1 : -1;
-			glm::vec2 newVelocity = glm::vec2(5*direction, -6);
+			glm::vec2 newVelocity = glm::vec2(8*direction, -3);
 			if (player->getVelocity().x == 0) {
 				newVelocity.y = 0;
 				newVelocity.x = 0;
@@ -241,7 +290,7 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 		player->setAction(PlayerAction::GROUNDED);
 		if (!player->playerInSurface())player->setStanding();
 		//We must check if player needs to jump since the player update will make it think it is in the air
-		if (Game::instance().getKey(GLFW_KEY_SPACE)) {
+		if (Game::instance().getKey(GLFW_KEY_W)) {
 			player->setAction(PlayerAction::JUMPING);
 			player->setVerticalVelocity(-8.0);
 		}
@@ -270,7 +319,7 @@ void Scene::updateInteractions(Player * player, Chest * chest) {
 		player->setAction(PlayerAction::GROUNDED);
 		if (!player->playerInSurface())player->setStanding();
 		//We must check if player needs to jump since the player update will make it think it is in the air
-		if (Game::instance().getKey(GLFW_KEY_SPACE)) {
+		if (Game::instance().getKey(GLFW_KEY_W)) {
 			player->setAction(PlayerAction::JUMPING);
 			player->setVerticalVelocity(-7.0);
 		}
@@ -320,6 +369,12 @@ void Scene::update(int deltaTime) {
 		if (!enemy->isDying()) updateInteractions(player, enemy);
 	}
 
+	for (Flor* flower : flowers) {
+		flower->update(deltaTime);
+		if (!flower->isDying()) updateInteractions(player, flower);
+		if (flower->isShooting()) checkShoots(player, flower);
+	}
+
 	for (Barrel* barrel : barrels) {
 		barrel->update(deltaTime);
 		updateInteractions(player, barrel);
@@ -350,6 +405,11 @@ void Scene::update(int deltaTime) {
 		if (enemies[i]->isDead()) enemies.erase(enemies.begin()+i);
 	}
 
+	n = flowers.size();
+	for (int i = 0; i < n; i++) {
+		if (flowers[i]->isDead()) flowers.erase(flowers.begin() + i);
+	}
+
 	n = chests.size();
 	for (int i = 0; i < n; i++) {
 		if (chests[i]->isDead()) chests.erase(chests.begin() + i);
@@ -367,8 +427,8 @@ void Scene::update(int deltaTime) {
 
 	if (Game::instance().getKey(GLFW_KEY_H)) gui->setLives(4);
 
-	checkPlayerState();
 	updateScreen(deltaTime);
+	checkPlayerState();
 }
 
 void Scene::render()
@@ -384,6 +444,8 @@ void Scene::render()
 
 	map->render();
 
+	background->render();
+
 	for (Barrel* barrel : barrels) {
 		barrel->render();
 	}
@@ -398,6 +460,10 @@ void Scene::render()
 
 	for (Enemy* enemy : enemies) {
 		enemy->render();
+	}
+
+	for (Flor* flower : flowers) {
+		flower->render();
 	}
 
 	player->render();

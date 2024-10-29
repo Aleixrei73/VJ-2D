@@ -5,29 +5,60 @@
 
 void Game::init()
 {
+	escena = 5;
+	pantalla = 0;
 	bPlay = true;
-	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+	glClearColor(0.f, 0.f, 0.f, 1.0f);
+	inicio.init();
 	scene.init();
+	instructions.init();
+	creditos.init();
+
 }
 
 bool Game::update(int deltaTime)
 {
-	scene.update(deltaTime);
 
+
+	if (escena == 5) inicio.update(pantalla);
+	else if (escena == 0) scene.update(deltaTime);
+	else if (escena == 1) instructions.update();
+	else if (escena == 2) creditos.update();
 	return bPlay;
 }
 
 void Game::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	scene.render();
+	if (escena == 5) inicio.render();
+	else if (escena == 0) scene.render();
+	else if (escena == 1) instructions.render();
+	else if (escena == 2) creditos.render();
+
 }
 
 void Game::keyPressed(int key)
 {
-	if(key == GLFW_KEY_ESCAPE) // Escape code
+
+	if (key == GLFW_KEY_SPACE) {
+		if (escena == 1 || escena == 2) pantalla = 5;
+		escena = pantalla;
+		pantalla = 0;
+	}
+	if (key == GLFW_KEY_ESCAPE || escena == 3) // Escape code
 		bPlay = false;
 	keys[key] = true;
+	if (escena == 5) {
+		if (key == GLFW_KEY_W) {
+			if (pantalla > 0) pantalla--;
+		}
+		if (key == GLFW_KEY_S) {
+			if (pantalla < 3) pantalla++;
+		}
+	}
+
+
+
 }
 
 void Game::keyReleased(int key) {
@@ -50,6 +81,3 @@ bool Game::getKey(int key) const
 {
 	return keys[key];
 }
-
-
-

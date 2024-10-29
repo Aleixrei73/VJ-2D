@@ -7,6 +7,8 @@ class Chest : public Entity {
 
 public:
 
+	~Chest();
+
 	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderPrograms, ConsumableType itemType);
 	void render();
 	void die() override;

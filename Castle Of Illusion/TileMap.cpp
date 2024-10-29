@@ -180,7 +180,7 @@ bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) c
 	y1 = (pos.y - 1) / tileSize;
 	for(int y=y0; y<=y1; y++)
 	{
-		if(map[y*mapSize.x+x] != 0)
+		if(map[y*mapSize.x+x] != 0 && map[y*mapSize.x + x] != 106)
 			return true;
 	}
 	
@@ -196,7 +196,7 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 	y1 = (pos.y - 1) / tileSize;
 	for(int y=y0; y<=y1; y++)
 	{
-		if(map[y*mapSize.x+x] != 0)
+		if(map[y*mapSize.x+x] != 0 && map[y*mapSize.x + x] != 106)
 			return true;
 	}
 	
@@ -245,6 +245,34 @@ bool TileMap::isEdgeRight(const glm::ivec2 & pos, const glm::ivec2 & size) const
 	if (map[ y*mapSize.x + x ] == 0) return true;
 
 	return false;
+}
+
+int TileMap::collisionLadderDown(const glm::ivec2 & pos, const glm::ivec2 & size) const {
+	int x0, x1, y;
+
+	x0 = pos.x / tileSize;
+	x1 = (pos.x + size.x - 1) / tileSize;
+	y = pos.y / tileSize;
+	for (int x = x0; x <= x1; x++)
+	{
+		if (map[y*mapSize.x + x] == 106)
+		{
+			return x;
+		}
+	}
+
+	return -1;
+}
+
+int TileMap::inLadder(const glm::ivec2 & pos) {
+	int x0, y;
+
+	x0 = pos.x / tileSize;
+	y = (pos.y) / tileSize;
+
+	if (map[y*mapSize.x + x0] == 106) return x0;
+
+	return -1;
 }
 
 

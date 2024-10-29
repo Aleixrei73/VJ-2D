@@ -35,6 +35,7 @@ void Scene::init()
 	interacting = false;
 	god = false;
 	interactingGod = false;
+	height = 1;
 
 	initShaders();
 	map = TileMap::createTileMap("levels/"+level+".txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
@@ -91,6 +92,7 @@ void Scene::updateScreen(int deltaTime) {
 	float cameraShift = 0;
 	float cameraLeft = float(player->getPosition().x) - AMPLITUDE * map->getTileSize() + cameraShift + 16;
 	float cameraRight = float(player->getPosition().x) + AMPLITUDE * map->getTileSize() + cameraShift + 16;
+	float top = playableEdge - 7 * map->getTileSize();
 
 	if (cameraLeft < 0) {
 		cameraLeft = 0.f;
@@ -101,9 +103,25 @@ void Scene::updateScreen(int deltaTime) {
 		cameraLeft = cameraRight - 2*AMPLITUDE * map->getTileSize();
 	}
 
-	projection = glm::ortho(cameraLeft, cameraRight, float(playableEdge + 3*map->getTileSize()), 0.f);
+	if (player->getAction() == PlayerAction::CLIMBING) {
+		if (player->getPosition().y > playableEdge) height += 1;
+		else if (player->getPosition().y < top) height -= 1;
+	}
+	
+	float objectiveEdge = height * (7 * map->getTileSize());
 
-	gui->update(glm::vec2(cameraLeft, 10 * map->getTileSize()), deltaTime);
+	if (playableEdge < objectiveEdge) {
+		playableEdge += 8;
+	}
+	else if (playableEdge > objectiveEdge) {
+		playableEdge -= 8;
+	}
+
+	top = playableEdge - 7 * map->getTileSize();
+
+	projection = glm::ortho(cameraLeft, cameraRight, float(playableEdge + 3*map->getTileSize()), top);
+
+	gui->update(glm::vec2(cameraLeft, float(playableEdge + 3 * map->getTileSize())), deltaTime);
 
 }
 
@@ -153,6 +171,8 @@ void Scene::restart() {
 	gui->setTries(gui->getTries() - 1);
 	gui->setTimeLeft(200);
 	gui->setLives(3);
+	height = 1;
+	playableEdge = 7 * map->getTileSize();
 
 }
 

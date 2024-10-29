@@ -7,7 +7,7 @@
 // Player is basically a Sprite that represents the player. As such it has
 // all properties it needs to track its movement, jumping, and collisions.
 
-enum class PlayerAction { JUMPING, GROUNDED, FALLING, ATTACKING, CROUCHING};
+enum class PlayerAction { JUMPING, GROUNDED, FALLING, ATTACKING, CROUCHING, CLIMBING};
 enum PlayerAnims
 {
 	STAND_RIGHT, STAND_LEFT,
@@ -21,7 +21,8 @@ enum PlayerAnims
 	MOVE_PICK_RIGHT, MOVE_PICK_LEFT,
 	JUMP_PICK_RIGHT, JUMP_PICK_LEFT,
 	DRIFT_PICK_RIGHT, DRIFT_PICK_LEFT,
-	DRIFT_RIGHT, DRIFT_LEFT
+	DRIFT_RIGHT, DRIFT_LEFT,
+	CLIMB
 };
 
 

@@ -20,7 +20,6 @@
 
 enum Direction { NONE = 0, LEFT, RIGHT, UP};
 
-
 class Scene
 {
 
@@ -65,6 +64,7 @@ private:
 	glm::mat4 projection;
 	bool interacting, god, interactingGod;
 	int playableEdge;
+	int height;
 
 };
 

@@ -29,8 +29,46 @@ void Player::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram)
 	
 }
 
-void Player::update(int deltaTime)
-{
+void Player::update(int deltaTime) {
+
+	int posLadder = map->collisionLadderDown(position, hitBox);
+
+	if (posLadder != -1 && Game::instance().getKey(GLFW_KEY_S)) {
+		velocity.x = 0;
+		velocity.y = 0;
+		if (!(action == PlayerAction::CLIMBING)) {
+			sprite->changeAnimation(CLIMB);
+			position.x = posLadder*map->getTileSize();
+			position.y += 16;
+			action = PlayerAction::CLIMBING;
+			sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
+			sprite->update(deltaTime);
+			return;
+		}
+		else {
+			position.y += 1;
+			sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
+			sprite->update(deltaTime);
+			return;
+		}
+	}
+
+	else if (posLadder != -1 && Game::instance().getKey(GLFW_KEY_W)) {
+		position.y -= 1;
+		position.x = posLadder * map->getTileSize();
+		action = PlayerAction::CLIMBING;
+		velocity.x = 0;
+		velocity.y = 0;
+		if (sprite->animation() != CLIMB) sprite->changeAnimation(CLIMB);
+		sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
+		sprite->update(deltaTime);
+		return;
+	}
+
+	else if (action == PlayerAction::CLIMBING) {
+		if (posLadder == -1) action == PlayerAction::FALLING;
+		else return;
+	}
 
 	if (position.y >= *mapEdge) {
 		dying = true;
@@ -434,7 +472,7 @@ void Player::loadAnimations() {
 	float sprite_x_space = 1.f / 15;
 	float sprite_y_space = 1.f / 14;
 
-	sprite->setNumberAnimations(24);
+	sprite->setNumberAnimations(26);
 
 	float spriteShift_x = 0;
 	float spriteShift_y = 0;
@@ -495,6 +533,11 @@ void Player::loadAnimations() {
 	spriteShift_y = 0;
 
 	setAnimation(DRIFT_RIGHT, 3, 1, glm::vec2(spriteShift_x, spriteShift_y));
+
+	spriteShift_x = sprite_x_space * 12;
+	spriteShift_y = 0;
+
+	setAnimation(CLIMB, 6, 2, glm::vec2(spriteShift_x, spriteShift_y));
 
 
 }

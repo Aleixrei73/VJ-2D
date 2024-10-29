@@ -149,7 +149,7 @@ void Scene::checkShoots(Player * player, Flor * flower) {
 	vector<Projectile*> projectiles = flower->getProjectiles();
 
 	for (Projectile* proj : projectiles) {
-		if(!hit) updateInteractions(player, proj, true);
+		updateInteractions(player, proj, true);
 	}
 }
 
@@ -265,8 +265,8 @@ void Scene::initEntities() {
 			int posY = stoi(word);
 			getline(s, word, ',');
 			ConsumableType type;
-			if (word == "Life") type = LIFE;
-			else type = POINTS;
+			if (word == "Life") type = ConsumableType::LIFE;
+			else type = ConsumableType::POINTS;
 			createChest(posX, posY, type);
 		}
 		else if (word == "Item") {
@@ -276,8 +276,8 @@ void Scene::initEntities() {
 			int posY = stoi(word);
 			getline(s, word, ',');
 			ConsumableType type;
-			if (word == "Life") type = LIFE;
-			else type = POINTS;
+			if (word == "Life") type = ConsumableType::LIFE;
+			else type = ConsumableType::POINTS;
 			createItem(posX, posY, type);
 		}
 		else {
@@ -339,7 +339,7 @@ void Scene::updateInteractions(Player *player, Enemy *enemy, bool projectile) {
 
 	if (dir == NONE) return;
 
-	if ( (player->getAction() != PlayerAction::ATTACKING || dir != UP || projectile) && !god) {
+	if ( (player->getAction() != PlayerAction::ATTACKING || dir != UP || projectile) && !god && !hit) {
 
 		gui->setLives(gui->getLives() - 1);
 		hit = true;
@@ -371,7 +371,7 @@ void Scene::updateInteractions(Player *player, Enemy *enemy, bool projectile) {
 		gui->setScore(gui->getScore() + 100);
 		glm::ivec2 hitPosition = glm::ivec2(player->getPosition().x, enemy->getPosition().y) - glm::ivec2(0, enemy->getHitBox().y);
 		player->setPosition(hitPosition);
-		player->setJump(-7);
+		player->setJump(-6);
 		enemy->die();
 	}
 }
@@ -415,7 +415,7 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 		//We must check if player needs to jump since the player update will make it think it is in the air
 		if (Game::instance().getKey(GLFW_KEY_W)) {
 			player->setAction(PlayerAction::JUMPING);
-			player->setVerticalVelocity(-8.0);
+			player->setVerticalVelocity(-7.0);
 		}
 	}
 }
@@ -454,7 +454,7 @@ void Scene::updateInteractions(Player * player, Consumable * item) {
 	Direction dir = isCollision(player, item);
 
 	if (dir != NONE && item->getVelocity().y >= 0) {
-		if (item->getType() == POINTS) {
+		if (item->getType() == ConsumableType::POINTS) {
 			gui->setScore(gui->getScore() + 200);
 		}
 		else {
@@ -490,12 +490,12 @@ void Scene::update(int deltaTime) {
 
 	for (Enemy* enemy : enemies) {
 		enemy->update(deltaTime);
-		if (!enemy->isDying() && !hit) updateInteractions(player, enemy, false);
+		if (!enemy->isDying()) updateInteractions(player, enemy, false);
 	}
 
 	for (Flor* flower : flowers) {
 		flower->update(deltaTime);
-		if (!flower->isDying() && !hit) updateInteractions(player, flower, false);
+		if (!flower->isDying()) updateInteractions(player, flower, false);
 		if (flower->isShooting()) checkShoots(player, flower);
 	}
 

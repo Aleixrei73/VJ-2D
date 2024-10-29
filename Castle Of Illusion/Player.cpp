@@ -359,7 +359,7 @@ void Player::update(int deltaTime) {
 			 
 			else if(Game::instance().getKey(GLFW_KEY_W)) {
 				action = PlayerAction::JUMPING;
-				velocity.y = -8;
+				velocity.y = -7.5;
 
 				if (animation % 2 == 0) {
 					if (picking) sprite->changeAnimation(JUMP_PICK_RIGHT);

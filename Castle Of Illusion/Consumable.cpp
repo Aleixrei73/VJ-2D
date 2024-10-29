@@ -4,7 +4,7 @@
 
 void Consumable::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram) {
 
-	if (type == POINTS) {
+	if (type == ConsumableType::POINTS) {
 		spritesheet.loadFromFile("images/coin.png", TEXTURE_PIXEL_FORMAT_RGBA);
 		sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(1 / 6.f, 1), &spritesheet, &shaderProgram);
 		sprite->setNumberAnimations(1);

@@ -2,7 +2,7 @@
 
 #include "Entity.h"
 
-enum ConsumableType {POINTS, LIFE};
+enum class ConsumableType {POINTS, LIFE};
 
 class Consumable : public Entity {
 

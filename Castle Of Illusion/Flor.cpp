@@ -77,7 +77,7 @@ void Flor::update(int deltaTime) {
 		
 		currentTime += deltaTime;
 
-		if (currentTime > 2000) {
+		if (currentTime > 1500) {
 			sprite->changeAnimation(SHOOT);
 			shooting = true;
 			projectiles[0]->shoot(position + glm::ivec2(hitBox.x / 2, -hitBox.y), -1);

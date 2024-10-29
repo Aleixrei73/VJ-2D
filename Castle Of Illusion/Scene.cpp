@@ -9,7 +9,7 @@
 #define SCREEN_X 0
 #define SCREEN_Y 0
 
-#define INIT_PLAYER_X_TILES 0
+#define INIT_PLAYER_X_TILES 1
 #define INIT_PLAYER_Y_TILES 6
 
 #define AMPLITUDE 10
@@ -37,7 +37,7 @@ void Scene::init()
 	interactingGod = false;
 
 	initShaders();
-	map = TileMap::createTileMap("levels/level01.txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
+	map = TileMap::createTileMap("levels/"+level+".txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
 
 	playableEdge = 7 * map->getTileSize();
 
@@ -52,6 +52,10 @@ void Scene::init()
 	projection = glm::ortho(0.f, float(SCREEN_WIDTH) - 16 * map->getTileSize(), float(playableEdge + 3 * map->getTileSize()),0.f);
 
 	currentTime = 0.0f;
+}
+
+void Scene::setLevel(string lvl) {
+	level = lvl;
 }
 
 Direction Scene::isCollision(Entity *player, Entity *enemy) {
@@ -92,8 +96,8 @@ void Scene::updateScreen(int deltaTime) {
 		cameraLeft = 0.f;
 		cameraRight = 2.f * AMPLITUDE * map->getTileSize();
 	}
-	else if (cameraRight > SCREEN_WIDTH * 2) {
-		cameraRight = SCREEN_WIDTH * 2;
+	else if (cameraRight > map->getMapWidth() * TILE_SIZE) {
+		cameraRight = map->getMapWidth() * TILE_SIZE;
 		cameraLeft = cameraRight - 2*AMPLITUDE * map->getTileSize();
 	}
 
@@ -126,7 +130,7 @@ void Scene::checkShoots(Player * player, Flor * flower) {
 	vector<Projectile*> projectiles = flower->getProjectiles();
 
 	for (Projectile* proj : projectiles) {
-		updateInteractions(player, proj);
+		updateInteractions(player, proj, true);
 	}
 }
 
@@ -220,12 +224,12 @@ void Scene::initEntities() {
 	chests.push_back(chest);
 }
 
-void Scene::updateInteractions(Player *player, Enemy *enemy) {
+void Scene::updateInteractions(Player *player, Enemy *enemy, bool projectile) {
 	Direction dir = isCollision(player, enemy);
 
 	if (dir == NONE) return;
 
-	if ( (player->getAction() != PlayerAction::ATTACKING || dir != UP) && !god) {
+	if ( (player->getAction() != PlayerAction::ATTACKING || dir != UP || projectile) && !god) {
 
 		gui->setLives(gui->getLives() - 1);
 
@@ -373,12 +377,12 @@ void Scene::update(int deltaTime) {
 
 	for (Enemy* enemy : enemies) {
 		enemy->update(deltaTime);
-		if (!enemy->isDying()) updateInteractions(player, enemy);
+		if (!enemy->isDying()) updateInteractions(player, enemy, false);
 	}
 
 	for (Flor* flower : flowers) {
 		flower->update(deltaTime);
-		if (!flower->isDying()) updateInteractions(player, flower);
+		if (!flower->isDying()) updateInteractions(player, flower, false);
 		if (flower->isShooting()) checkShoots(player, flower);
 	}
 

@@ -1,0 +1,45 @@
+﻿  TileMap.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\tilemap.h(5): fatal error C1083: No se puede abrir el archivo incluir: 'glm/glm.hpp': No such file or directory
+  Texture.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\texture.cpp(1): fatal error C1083: No se puede abrir el archivo incluir: 'SOIL.h': No such file or directory
+  Sprite.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\sprite.cpp(1): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
+  ShaderProgram.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\shaderprogram.cpp(1): fatal error C1083: No se puede abrir el archivo incluir: 'glm/gtc/type_ptr.hpp': No such file or directory
+  Shader.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\shader.h(6): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
+  Scene.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\scene.cpp(3): fatal error C1083: No se puede abrir el archivo incluir: 'glm/gtc/matrix_transform.hpp': No such file or directory
+  Projectile.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\sprite.h(6): fatal error C1083: No se puede abrir el archivo incluir: 'glm/glm.hpp': No such file or directory
+  Player.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\player.cpp(3): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
+  Barrel.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\sprite.h(6): fatal error C1083: No se puede abrir el archivo incluir: 'glm/glm.hpp': No such file or directory
+  main.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\main.cpp(1): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
+  Instructions.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\instructions.h(4): fatal error C1083: No se puede abrir el archivo incluir: 'glm/glm.hpp': No such file or directory
+  Inicio.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\inicio.h(4): fatal error C1083: No se puede abrir el archivo incluir: 'glm/glm.hpp': No such file or directory
+  GUI.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\gui.h(3): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
+  Game.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\game.cpp(1): fatal error C1083: No se puede abrir el archivo incluir: 'GL/glew.h': No such file or directory
+  Flor.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\sprite.h(6): fatal error C1083: No se puede abrir el archivo incluir: 'glm/glm.hpp': No such file or directory
+  Entity.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\sprite.h(6): fatal error C1083: No se puede abrir el archivo incluir: 'glm/glm.hpp': No such file or directory
+  Enemy.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\sprite.h(6): fatal error C1083: No se puede abrir el archivo incluir: 'glm/glm.hpp': No such file or directory
+  Creditos.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\creditos.h(4): fatal error C1083: No se puede abrir el archivo incluir: 'glm/glm.hpp': No such file or directory
+  Consumable.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\sprite.h(6): fatal error C1083: No se puede abrir el archivo incluir: 'glm/glm.hpp': No such file or directory
+  Chest.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\sprite.h(6): fatal error C1083: No se puede abrir el archivo incluir: 'glm/glm.hpp': No such file or directory
+  Generando código...
+  Compilando...
+  Background.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\sprite.h(6): fatal error C1083: No se puede abrir el archivo incluir: 'glm/glm.hpp': No such file or directory
+  Generando código...

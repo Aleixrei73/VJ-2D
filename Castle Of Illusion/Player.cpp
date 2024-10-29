@@ -105,6 +105,8 @@ void Player::update(int deltaTime)
 
 		else if (sprite->animation() != MOVE_LEFT) sprite->changeAnimation(MOVE_LEFT);
 
+		if (velocity.x == 0 && action != PlayerAction::CROUCHING) velocity.x = -1;
+
 		velocity.x = velocity.x - acceleration.x * deltaTime/10;
 
 		if (velocity.x < -MAX_VELOCITY) velocity.x = -MAX_VELOCITY;
@@ -151,6 +153,8 @@ void Player::update(int deltaTime)
 		}
 
 		else if (sprite->animation() != MOVE_RIGHT) sprite->changeAnimation(MOVE_RIGHT);
+
+		if (velocity.x == 0 && action != PlayerAction::CROUCHING) velocity.x = 1;
 
 		velocity.x = velocity.x + acceleration.x * deltaTime/10;
 

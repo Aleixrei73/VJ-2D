@@ -63,6 +63,7 @@ void TileMap::loadMapFromCSV(const string & tileMapFile)
 		stringstream s(line);
 		for (int j = 0; j < mapSize.x; j++) {
 			getline(s, word, ',');
+			if (word == "") word = "-1";
 			int number = stoi(word);
 			number = number == -1 ? 0 : number + 1;
 			map[i*mapSize.x + j] = number;
@@ -211,7 +212,7 @@ bool TileMap::collisionMoveDown(const glm::ivec2 &pos, const glm::ivec2 &size, i
 	y = pos.y / tileSize;
 	for(int x=x0; x<=x1; x++)
 	{
-		if(map[y*mapSize.x+x] != 0 && map[y*mapSize.x + x] != 100)
+		if(map[y*mapSize.x+x] != 0)
 		{
 			if(*posY - tileSize * y <= 8)
 			{

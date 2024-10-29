@@ -49,7 +49,9 @@ private:
 								  // we can have access at any time
 	int pantalla;
 	int escena;
-	Scene scene;
+	int level;
+
+	Scene level01, level02, level03;
 	Inicio inicio;
 	Creditos creditos;
 	Instructions instructions;

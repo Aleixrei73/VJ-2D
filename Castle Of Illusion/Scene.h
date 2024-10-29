@@ -29,12 +29,13 @@ public:
 	~Scene();
 
 	void init();
+	void setLevel(string lvl);
 	void update(int deltaTime);
 	void render();
 
 private:
 	void initShaders();
-	void updateInteractions(Player * player, Enemy * enemy);
+	void updateInteractions(Player * player, Enemy * enemy, bool projectile);
 	void updateInteractions(Player * player, Barrel * barrel);
 	void updateInteractions(Player * player, Chest * chest);
 	void updateInteractions(Player * player, Consumable * item);
@@ -49,6 +50,7 @@ private:
 
 private:
 	TileMap *map;
+	string level;
 	Player *player;
 	Background *background;
 	GUI *gui;

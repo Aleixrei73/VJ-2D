@@ -1,3 +1,25 @@
 ﻿  Scene.cpp
-  Castle Of Illusion.vcxproj -> C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\Castle Of Illusion\Castle Of Illusion\Debug\Castle Of Illusion.exe
-  Castle Of Illusion.vcxproj -> C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\Castle Of Illusion\Castle Of Illusion\Debug\Castle Of Illusion.pdb (Partial PDB)
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\scene.cpp(100): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+  Game.cpp
+  Generando código...
+  Omitiendo... (no se detectaron cambios relevantes)
+  main.cpp
+  TileMap.cpp
+  Projectile.cpp
+  Player.cpp
+  Instructions.cpp
+  Inicio.cpp
+  Flor.cpp
+  Entity.cpp
+  Enemy.cpp
+  Creditos.cpp
+  Consumable.cpp
+  Chest.cpp
+  Barrel.cpp
+LINK : warning LNK4098: la biblioteca predeterminada'MSVCRT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
+SOIL.lib(image_DXT.obj) : warning LNK4099: no se encontr¾ PDB 'vc100.pdb' con 'SOIL.lib(image_DXT.obj)' o en 'C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\VJ-2D\Debug\vc100.pdb'; se vincularß el objeto sin tener en cuenta informaci¾n de depuraci¾n
+SOIL.lib(image_helper.obj) : warning LNK4099: no se encontr¾ PDB 'vc100.pdb' con 'SOIL.lib(image_helper.obj)' o en 'C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\VJ-2D\Debug\vc100.pdb'; se vincularß el objeto sin tener en cuenta informaci¾n de depuraci¾n
+SOIL.lib(SOIL.obj) : warning LNK4099: no se encontr¾ PDB 'vc100.pdb' con 'SOIL.lib(SOIL.obj)' o en 'C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\VJ-2D\Debug\vc100.pdb'; se vincularß el objeto sin tener en cuenta informaci¾n de depuraci¾n
+SOIL.lib(stb_image_aug.obj) : warning LNK4099: no se encontr¾ PDB 'vc100.pdb' con 'SOIL.lib(stb_image_aug.obj)' o en 'C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\VJ-2D\Debug\vc100.pdb'; se vincularß el objeto sin tener en cuenta informaci¾n de depuraci¾n
+  Castle Of Illusion.vcxproj -> C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\VJ-2D\Debug\Castle Of Illusion.exe
+  Castle Of Illusion.vcxproj -> C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\VJ-2D\Debug\Castle Of Illusion.pdb (Partial PDB)

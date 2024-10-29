@@ -178,6 +178,7 @@ bool TileMap::collisionMoveLeft(const glm::ivec2 &pos, const glm::ivec2 &size) c
 	x = pos.x / tileSize;
 	y0 = (pos.y - size.y) / tileSize;
 	y1 = (pos.y - 1) / tileSize;
+	if (y0 < 0) return false;
 	for(int y=y0; y<=y1; y++)
 	{
 		if(map[y*mapSize.x+x] != 0 && map[y*mapSize.x + x] != 106)
@@ -194,6 +195,7 @@ bool TileMap::collisionMoveRight(const glm::ivec2 &pos, const glm::ivec2 &size) 
 	x = (pos.x + size.x - 1) / tileSize;
 	y0 = (pos.y - size.y) / tileSize;
 	y1 = (pos.y - 1) / tileSize;
+	if (y0 < 0) return false;
 	for(int y=y0; y<=y1; y++)
 	{
 		if(map[y*mapSize.x+x] != 0 && map[y*mapSize.x + x] != 106)
@@ -231,7 +233,8 @@ bool TileMap::isEdgeLeft(const glm::ivec2 & pos, const glm::ivec2 & size) const
 	x = pos.x / tileSize;
 	y = (pos.y) / tileSize;
 
-	if (map[ y*mapSize.x + x ] == 0) return true;
+	if (map[ y*mapSize.x + x ] == 0) 
+		return true;
 
 	return false;
 }
@@ -242,7 +245,8 @@ bool TileMap::isEdgeRight(const glm::ivec2 & pos, const glm::ivec2 & size) const
 	x = (pos.x + size.x - 1) / tileSize;
 	y = (pos.y) / tileSize;
 
-	if (map[ y*mapSize.x + x ] == 0) return true;
+	if (map[ y*mapSize.x + x ] == 0) 
+		return true;
 
 	return false;
 }

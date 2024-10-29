@@ -12,7 +12,7 @@ void Background::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram
 
 	sprite->changeAnimation(0);
 
-	sprite->setPosition(glm::vec2(float(tileMapPos.x + 0), float(tileMapPos.y + 0)));
+	sprite->setPosition(glm::vec2(float(tileMapPos.x + 0), float(tileMapPos.y + 14*32)));
 }
 
 void Background::render() {

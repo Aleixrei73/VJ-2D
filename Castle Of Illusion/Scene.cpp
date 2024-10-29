@@ -36,6 +36,7 @@ void Scene::init()
 	god = false;
 	interactingGod = false;
 	height = 1;
+	hit = false;
 
 	initShaders();
 	map = TileMap::createTileMap("levels/"+level+".txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
@@ -108,7 +109,7 @@ void Scene::updateScreen(int deltaTime) {
 		else if (player->getPosition().y < top) height -= 1;
 	}
 	
-	float objectiveEdge = height * (7 * map->getTileSize());
+	int objectiveEdge = height * (7 * map->getTileSize());
 
 	if (playableEdge < objectiveEdge) {
 		playableEdge += 8;
@@ -148,7 +149,7 @@ void Scene::checkShoots(Player * player, Flor * flower) {
 	vector<Projectile*> projectiles = flower->getProjectiles();
 
 	for (Projectile* proj : projectiles) {
-		updateInteractions(player, proj, true);
+		if(!hit) updateInteractions(player, proj, true);
 	}
 }
 
@@ -171,8 +172,13 @@ void Scene::restart() {
 	gui->setTries(gui->getTries() - 1);
 	gui->setTimeLeft(200);
 	gui->setLives(3);
-	height = 1;
 	playableEdge = 7 * map->getTileSize();
+	interacting = false;
+	god = false;
+	interactingGod = false;
+	height = 1;
+	hit = false;
+
 
 }
 
@@ -252,6 +258,8 @@ void Scene::updateInteractions(Player *player, Enemy *enemy, bool projectile) {
 	if ( (player->getAction() != PlayerAction::ATTACKING || dir != UP || projectile) && !god) {
 
 		gui->setLives(gui->getLives() - 1);
+		hit = true;
+		hitTime = 0;
 
 		if (dir == LEFT) {
 			player->setHorizontalVelocity(-4);
@@ -385,6 +393,7 @@ void Scene::update(int deltaTime) {
 	currentTime += deltaTime;
 	if (interacting) interacting = Game::instance().getKey(GLFW_KEY_V);
 	if (interactingGod) interactingGod = Game::instance().getKey(GLFW_KEY_G);
+	if (hit) hitTime += deltaTime;
 
 	if (!interactingGod && Game::instance().getKey(GLFW_KEY_G)) {
 		god = !god;
@@ -397,12 +406,12 @@ void Scene::update(int deltaTime) {
 
 	for (Enemy* enemy : enemies) {
 		enemy->update(deltaTime);
-		if (!enemy->isDying()) updateInteractions(player, enemy, false);
+		if (!enemy->isDying() && !hit) updateInteractions(player, enemy, false);
 	}
 
 	for (Flor* flower : flowers) {
 		flower->update(deltaTime);
-		if (!flower->isDying()) updateInteractions(player, flower, false);
+		if (!flower->isDying() && !hit) updateInteractions(player, flower, false);
 		if (flower->isShooting()) checkShoots(player, flower);
 	}
 
@@ -504,7 +513,16 @@ void Scene::render()
 		flower->render();
 	}
 
-	player->render();
+	if (hit) {
+		if (hitTime < 2000) {
+			if (hitTime % 20 == 0) player->render();
+		}
+		else {
+			hit = false;
+			player->render();
+		}
+	}
+	else player->render();
 	gui->render();
 }
 

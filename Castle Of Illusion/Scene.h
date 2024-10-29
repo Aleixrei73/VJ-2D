@@ -60,6 +60,8 @@ private:
 	vector<Flor*> flowers;
 	ShaderProgram texProgram;
 	float currentTime;
+	int hitTime;
+	bool hit;
 	glm::ivec2 cameraPos;
 	glm::mat4 projection;
 	bool interacting, god, interactingGod;

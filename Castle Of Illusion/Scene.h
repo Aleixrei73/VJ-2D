@@ -3,6 +3,9 @@
 
 
 #include <glm/glm.hpp>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 #include "ShaderProgram.h"
 #include "TileMap.h"
 #include "Player.h"
@@ -46,6 +49,12 @@ private:
 	void restart();
 	void deleteEntities();
 	void initEntities();
+
+	void createEnemy(int posX, int posY);
+	void createFlower(int posX, int posY);
+	void createChest(int posX, int posY, ConsumableType type);
+	void createItem(int posX, int posY, ConsumableType type);
+	void createBarrel(int posX, int posY, bool breakable);
 
 private:
 	TileMap *map;

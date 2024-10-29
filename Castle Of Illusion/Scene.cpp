@@ -172,6 +172,7 @@ void Scene::restart() {
 	gui->setTries(gui->getTries() - 1);
 	gui->setTimeLeft(200);
 	gui->setLives(3);
+	gui->setScore(0);
 	playableEdge = 7 * map->getTileSize();
 	interacting = false;
 	god = false;
@@ -183,6 +184,8 @@ void Scene::restart() {
 }
 
 void Scene::deleteEntities() {
+
+	delete player;
 
 	for (int i = enemies.size() - 1; i > -1; i--) {
 		delete enemies[i];
@@ -217,37 +220,118 @@ void Scene::initEntities() {
 	player->setTileMap(map);
 	player->setEdgePointer(&playableEdge);
 
+	fstream fin;
+
+	// Open an existing file
+	fin.open("enemies/"+level+".csv", ios::in);
+
+	string line, word, temp;
+
+	
+
+	while (true) {
+
+		getline(fin, line);
+		stringstream s(line);
+		getline(s, word, ',');
+
+		if (word == "Tree") {
+			getline(s, word, ',');
+			int posX = stoi(word);
+			getline(s, word, ',');
+			int posY = stoi(word);
+			createEnemy(posX, posY);
+		}
+		else if (word == "Flower") {
+			getline(s, word, ',');
+			int posX = stoi(word);
+			getline(s, word, ',');
+			int posY = stoi(word);
+			createFlower(posX, posY);
+		}
+		else if (word == "Barrel") {
+			getline(s, word, ',');
+			int posX = stoi(word);
+			getline(s, word, ',');
+			int posY = stoi(word);
+			getline(s, word, ',');
+			bool breakable = stoi(word) == 1;
+			createBarrel(posX, posY, breakable);
+		}
+		else if (word == "Chest") {
+			getline(s, word, ',');
+			int posX = stoi(word);
+			getline(s, word, ',');
+			int posY = stoi(word);
+			getline(s, word, ',');
+			ConsumableType type;
+			if (word == "Life") type = LIFE;
+			else type = POINTS;
+			createChest(posX, posY, type);
+		}
+		else if (word == "Item") {
+			getline(s, word, ',');
+			int posX = stoi(word);
+			getline(s, word, ',');
+			int posY = stoi(word);
+			getline(s, word, ',');
+			ConsumableType type;
+			if (word == "Life") type = LIFE;
+			else type = POINTS;
+			createItem(posX, posY, type);
+		}
+		else {
+			fin.close();
+			return;
+		}
+	}
+}
+
+void Scene::createEnemy(int posX, int posY) {
 	Enemy *enemy = new Enemy();
 	enemy->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
-	enemy->setPosition(glm::vec2(45 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	enemy->setPosition(glm::vec2(posX * map->getTileSize(), posY * map->getTileSize()));
 	enemy->setTileMap(map);
 	enemy->setHorizontalVelocity(-1);
 	enemy->setEdgePointer(&playableEdge);
-
 	enemies.push_back(enemy);
+}
 
+void Scene::createFlower(int posX, int posY) {
 	Flor *flor = new Flor();
 	flor->setEdgePointer(&playableEdge);
 	flor->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, player);
-	flor->setPosition(glm::vec2(4 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	flor->setPosition(glm::vec2(posX * map->getTileSize(), posY * map->getTileSize()));
 	flor->setTileMap(map);
 	flowers.push_back(flor);
+}
 
-	Barrel *barrel = new Barrel();
-	barrel->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, false);
-	barrel->setPosition(glm::vec2(30 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-	barrel->setTileMap(map);
-	barrel->setEdgePointer(&playableEdge);
-
-	barrels.push_back(barrel);
-
+void Scene::createChest(int posX, int posY, ConsumableType type) {
 	Chest *chest = new Chest();
-	chest->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, LIFE);
-	chest->setPosition(glm::vec2(25 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	chest->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, type);
+	chest->setPosition(glm::vec2(posX * map->getTileSize(), posY * map->getTileSize()));
 	chest->setTileMap(map);
 	chest->setEdgePointer(&playableEdge);
-
 	chests.push_back(chest);
+}
+
+void Scene::createItem(int posX, int posY, ConsumableType type) {
+	Consumable *item = new Consumable();
+	item->setType(type);
+	item->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	item->setPosition(glm::vec2(posX * map->getTileSize(), posY * map->getTileSize()));
+	item->setTileMap(map);
+	item->setEdgePointer(&playableEdge);
+	items.push_back(item);
+}
+
+void Scene::createBarrel(int posX, int posY, bool breakable) {
+	Barrel *barrel = new Barrel();
+	barrel->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram, breakable);
+	barrel->setPosition(glm::vec2(posX * map->getTileSize(), posY * map->getTileSize()));
+	barrel->setTileMap(map);
+	barrel->setEdgePointer(&playableEdge);
+	barrels.push_back(barrel);
 }
 
 void Scene::updateInteractions(Player *player, Enemy *enemy, bool projectile) {
@@ -422,7 +506,7 @@ void Scene::update(int deltaTime) {
 
 	for (Consumable* item : items) {
 		item->update(deltaTime);
-		updateInteractions(player, item);
+		if (!item->isDead()) updateInteractions(player, item);
 	}
 
 	for (Chest* chest : chests) {
@@ -448,28 +532,42 @@ void Scene::update(int deltaTime) {
 
 	int n = enemies.size();
 	for (int i = 0; i < n; i++) {
-		if (enemies[i]->isDead()) enemies.erase(enemies.begin()+i);
+		if (enemies[i]->isDead()) {
+			enemies.erase(enemies.begin() + i); 
+			break;
+		}
 	}
 
 	n = flowers.size();
 	for (int i = 0; i < n; i++) {
-		if (flowers[i]->isDead()) flowers.erase(flowers.begin() + i);
+		if (flowers[i]->isDead()) {
+			flowers.erase(flowers.begin() + i); 
+			break;
+		}
 	}
 
 	n = chests.size();
 	for (int i = 0; i < n; i++) {
-		if (chests[i]->isDead()) chests.erase(chests.begin() + i);
+		if (chests[i]->isDead()) {
+			chests.erase(chests.begin() + i);
+			break;
+		}
 	}
 
 	n = barrels.size();
 	for (int i = 0; i < n; i++) {
-		if (barrels[i]->isDead())
-			barrels.erase(barrels.begin() + i);
+		if (barrels[i]->isDead()) {
+			barrels.erase(barrels.begin() + i); 
+			break;
+		}
 	}
 
 	n = items.size();
 	for (int i = 0; i < n; i++) {
-		if (items[i]->isDead()) items.erase(items.begin() + i);
+		if (items[i]->isDead()) {
+			items.erase(items.begin() + i); 
+			break;
+		}
 	}
 
 	if (Game::instance().getKey(GLFW_KEY_H)) gui->setLives(4);
@@ -502,7 +600,7 @@ void Scene::render()
 	}
 
 	for (Consumable* item : items) {
-		item->render();
+		if (!item->isDead()) item->render();
 	}
 
 	for (Enemy* enemy : enemies) {

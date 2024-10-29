@@ -33,6 +33,7 @@ void Consumable::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgr
 	acceleration = glm::vec2(0.1, 0.2);
 	velocity = glm::vec2(0, 0);
 	hitBox = glm::ivec2(16, 16);
+	droped = false;
 }
 
 void Consumable::update(int deltaTime) {

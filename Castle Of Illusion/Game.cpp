@@ -81,3 +81,7 @@ bool Game::getKey(int key) const
 {
 	return keys[key];
 }
+
+void Game::setScene(int scene) {
+	escena = scene;
+}

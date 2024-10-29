@@ -41,6 +41,7 @@ public:
 	void mouseRelease(int button);
 
 	bool getKey(int key) const;
+	void setScene(int scene);
 
 private:
 	bool bPlay; // Continue to play game?

@@ -7,7 +7,7 @@ void GUI::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, int
 
 	//Variable initialitation
 
-	lives = 4;
+	lives = 3;
 	score = 0;
 	timeLeft = 200;
 	tries = 3;
@@ -38,7 +38,7 @@ void GUI::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, int
 	//Names initialitation
 
 	float shiftLetters = (tileGap*TILE_SIZE - 7 * 5)/2.f;
-	float shiftSprite = (tileGap*TILE_SIZE - 4 * 16) / 2.f;
+	float shiftSprite = (tileGap*TILE_SIZE - 3 * 16) / 2.f;
 
 	glm::vec2 livesPos = basePosition + glm::vec2(shiftLetters,-3*TILE_SIZE);
 	glm::vec2 heartsPos = basePosition + glm::vec2(shiftSprite, -2 * TILE_SIZE);
@@ -102,7 +102,7 @@ void GUI::createNumber(int num, int digitNumber, vector<Sprite*>& res, const glm
 
 void GUI::createHearts(const glm::vec2 &pos, ShaderProgram & shaderProgram) {
 
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 3; i++) {
 		Sprite *heartSprite = Sprite::createSprite(glm::ivec2(16,16), glm::vec2(1/2.f, 1), &heart, &shaderProgram);
 		heartSprite->setNumberAnimations(2);
 		heartSprite->setAnimationSpeed(FILL, 1);
@@ -143,7 +143,7 @@ void GUI::update(const glm::vec2 & newPos, int deltaTime) {
 	float shiftLetters = (tileGap*TILE_SIZE - 7*5) /2.f;
 
 	glm::vec2 livesPos = newPos + glm::vec2(shiftLetters, -3 * TILE_SIZE + 9);
-	float shiftSprite = (tileGap*TILE_SIZE - 4 * 16) / 2.f;
+	float shiftSprite = (tileGap*TILE_SIZE - 3 * 16) / 2.f;
 	glm::vec2 heartsPos = newPos + glm::vec2(shiftSprite, -2 * TILE_SIZE);
 
 	glm::vec2 triesPos = livesPos + glm::vec2(tileGap * TILE_SIZE, 0);
@@ -171,7 +171,7 @@ void GUI::update(const glm::vec2 & newPos, int deltaTime) {
 		livesSprites[i]->setPosition(livesPos + glm::vec2(LETTER_GAP*i, 0));
 	}
 
-	for (int i = 5; i < 9; i++) {
+	for (int i = 5; i < 8; i++) {
 		if ((i - 5) < lives) {
 			livesSprites[i]->changeAnimation(FILL);
 		}

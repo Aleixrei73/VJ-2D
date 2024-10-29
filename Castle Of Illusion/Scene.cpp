@@ -139,9 +139,16 @@ void Scene::restart() {
 	player->setDeath(false);
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	player->setVelocity(glm::vec2(0, 0));
+	if (gui->getTries() == 0) {
+		gui->setTries(3);
+		gui->setTimeLeft(200);
+		gui->setLives(3);
+		Game::instance().setScene(5);
+		return;
+	}
 	gui->setTries(gui->getTries() - 1);
 	gui->setTimeLeft(200);
-	gui->setLives(4);
+	gui->setLives(3);
 
 }
 
@@ -398,6 +405,12 @@ void Scene::update(int deltaTime) {
 		}
 	}
 
+	for (Flor* flower : flowers) {
+		for (Barrel* barrel : barrels) {
+			if (barrel->getState() == THROWED && !flower->isDying()) checkKillCollision(barrel, flower);
+		}
+	}
+
 	//Check if entities are dead to erase them so we do not update or render them anymore
 
 	int n = enemies.size();
@@ -417,7 +430,8 @@ void Scene::update(int deltaTime) {
 
 	n = barrels.size();
 	for (int i = 0; i < n; i++) {
-		if (barrels[i]->isDead()) barrels.erase(barrels.begin() + i);
+		if (barrels[i]->isDead())
+			barrels.erase(barrels.begin() + i);
 	}
 
 	n = items.size();
@@ -442,9 +456,9 @@ void Scene::render()
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 
-	map->render();
+	//background->render();
 
-	background->render();
+	map->render();
 
 	for (Barrel* barrel : barrels) {
 		barrel->render();

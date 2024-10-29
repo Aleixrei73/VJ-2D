@@ -80,6 +80,8 @@ void Barrel::update(int deltaTime) {
 			}
 		}
 
+		if (position.y > *mapEdge) death = true;
+
 	}
 
 	if (state == THROWED && velocity.x == 0 && velocity.y == 0) state = FREE;

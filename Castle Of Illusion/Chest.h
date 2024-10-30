@@ -19,5 +19,6 @@ public:
 private:
 	Consumable *item;
 	bool opened;
+	int openTime;
 
 };

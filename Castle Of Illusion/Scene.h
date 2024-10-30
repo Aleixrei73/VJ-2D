@@ -41,7 +41,8 @@ private:
 	void updateInteractions(Player * player, Barrel * barrel);
 	void updateInteractions(Player * player, Chest * chest);
 	void updateInteractions(Player * player, Consumable * item);
-	void checkKillCollision(Barrel * barrel, Entity * target);
+	void checkKillCollision(Barrel * barrel, Enemy * target);
+	void checkKillCollision(Barrel * barrel, Chest * target);
 	Direction isCollision(Entity * player, Entity * enemy);
 	void updateScreen(int deltaTime);
 	void checkPlayerState();

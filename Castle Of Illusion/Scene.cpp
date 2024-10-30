@@ -435,7 +435,7 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 		player->setPosition(newPosition);
 		if (barrel->isExplosive() && player->getAction() == PlayerAction::ATTACKING) {
 			player->setPosition(newPosition);
-			player->setJump(-5);
+			player->setJump(-6.0);
 			barrel->explode();
 			return;
 		}
@@ -493,12 +493,24 @@ void Scene::updateInteractions(Player * player, Consumable * item) {
 	}
 }
 
-void Scene::checkKillCollision(Barrel * barrel, Entity * target) {
+void Scene::checkKillCollision(Barrel * barrel, Enemy * target) {
 	Direction dir = isCollision(barrel, target);
 	if (dir != NONE) {
 		target->die();
 		gui->setScore(gui->getScore() + 100);
 		if (barrel->isExplosive()) barrel->explode();
+	}
+}
+
+void Scene::checkKillCollision(Barrel * barrel, Chest * target) {
+	Direction dir = isCollision(barrel, target);
+	if (dir != NONE) {
+		Consumable *item = target->open();
+		item->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+		item->setTileMap(map);
+		item->drop(target->getPosition());
+		items.push_back(item);
+		target->die();
 	}
 }
 
@@ -546,8 +558,8 @@ void Scene::update(int deltaTime) {
 	}
 
 	for (Chest* chest : chests) {
-		if (!chest->isDying())updateInteractions(player, chest);
-		else chest->update(deltaTime);
+		if (!chest->isDying()) updateInteractions(player, chest);
+		chest->update(deltaTime);
 	}
 
 	//Check interaction between entities (basically checks if a barrel is hitting an enemy when throwed)
@@ -555,6 +567,12 @@ void Scene::update(int deltaTime) {
 	for (Enemy* enemy : enemies) {
 		for (Barrel* barrel : barrels) {
 			if (barrel->getState() == THROWED && !enemy->isDying()) checkKillCollision(barrel, enemy);
+		}
+	}
+
+	for (Chest* chest : chests) {
+		for (Barrel* barrel : barrels) {
+			if (barrel->getState() == THROWED && !chest->isDying()) checkKillCollision(barrel, chest);
 		}
 	}
 

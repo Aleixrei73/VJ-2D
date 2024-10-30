@@ -13,7 +13,7 @@ Barrel::~Barrel() {
 
 void Barrel::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, bool expl) {
 
-	spritesheet.loadFromFile("images/prueba_objects.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	spritesheet.loadFromFile("images/objects.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(1/11.f, 1/3.f), &spritesheet, &shaderProgram);
 	sprite->setNumberAnimations(2);
 

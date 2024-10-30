@@ -153,32 +153,40 @@ void Scene::checkShoots(Player * player, Flor * flower) {
 	}
 }
 
+void Scene::checkShoots(Player* player, Boss* boss) {
+	vector<Projectile*> projectiles = boss->getProjectiles();
+
+	for (Projectile* proj : projectiles) {
+		if (!hit) updateInteractions(player, proj, true);
+	}
+}
+
 void Scene::restart() {
 
 	deleteEntities();
 
 	initEntities();
 
-	player->setDeath(false);
-	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
-	player->setVelocity(glm::vec2(0, 0));
-	if (gui->getTries() == 0) {
-		gui->setTries(3);
-		gui->setTimeLeft(200);
-		gui->setLives(3);
-		Game::instance().setScene(5);
-		return;
-	}
-	gui->setTries(gui->getTries() - 1);
-	gui->setTimeLeft(200);
-	gui->setLives(3);
-	gui->setScore(0);
 	playableEdge = 7 * map->getTileSize();
 	interacting = false;
 	god = false;
 	interactingGod = false;
 	height = 1;
 	hit = false;
+
+	gui->setTimeLeft(200);
+	gui->setLives(3);
+	gui->setScore(0);
+
+	player->setDeath(false);
+	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	player->setVelocity(glm::vec2(0, 0));
+	if (gui->getTries() == 0) {
+		gui->setTries(3);
+		Game::instance().setScene(5);
+		return;
+	}
+	gui->setTries(gui->getTries() - 1);
 
 
 }
@@ -280,6 +288,13 @@ void Scene::initEntities() {
 			else type = ConsumableType::POINTS;
 			createItem(posX, posY, type);
 		}
+		else if (word == "Boss") {
+			getline(s, word, ',');
+			int posX = stoi(word);
+			getline(s, word, ',');
+			int posY = stoi(word);
+			createBoss(posX, posY);
+		}
 		else {
 			fin.close();
 			return;
@@ -332,6 +347,14 @@ void Scene::createBarrel(int posX, int posY, bool breakable) {
 	barrel->setTileMap(map);
 	barrel->setEdgePointer(&playableEdge);
 	barrels.push_back(barrel);
+}
+
+void Scene::createBoss(int posX, int posY) {
+	boss = new Boss();
+	boss->setEdgePointer(&playableEdge);
+	boss->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram);
+	boss->setPosition(glm::vec2(4 * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
+	boss->setTileMap(map);
 }
 
 void Scene::updateInteractions(Player *player, Enemy *enemy, bool projectile) {
@@ -493,6 +516,12 @@ void Scene::update(int deltaTime) {
 		if (!enemy->isDying()) updateInteractions(player, enemy, false);
 	}
 
+	if (boss != nullptr) {
+		boss->update(deltaTime);
+		if (!boss->isDying()) updateInteractions(player, boss, false);
+		checkShoots(player, boss);
+	}
+
 	for (Flor* flower : flowers) {
 		flower->update(deltaTime);
 		if (!flower->isDying()) updateInteractions(player, flower, false);
@@ -611,8 +640,10 @@ void Scene::render()
 		flower->render();
 	}
 
+	if (boss != nullptr) boss->render();
+
 	if (hit) {
-		if (hitTime < 2000) {
+		if (hitTime < 1000) {
 			if (hitTime % 20 == 0) player->render();
 		}
 		else {

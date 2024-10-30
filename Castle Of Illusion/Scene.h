@@ -16,7 +16,7 @@
 #include "Background.h"
 #include "GUI.h"
 #include "Flor.h"
-
+#include "Boss.h"
 
 // Scene contains all the entities of our game.
 // It is responsible for updating and render them.
@@ -46,6 +46,7 @@ private:
 	void updateScreen(int deltaTime);
 	void checkPlayerState();
 	void checkShoots(Player *player, Flor* flower);
+	void checkShoots(Player* player, Boss* boss);
 	void restart();
 	void deleteEntities();
 	void initEntities();
@@ -55,6 +56,7 @@ private:
 	void createChest(int posX, int posY, ConsumableType type);
 	void createItem(int posX, int posY, ConsumableType type);
 	void createBarrel(int posX, int posY, bool breakable);
+	void createBoss(int posX, int posY);
 
 private:
 	TileMap *map;
@@ -62,6 +64,7 @@ private:
 	Player *player;
 	Background *background;
 	GUI *gui;
+	Boss* boss;
 	vector<Enemy*> enemies;
 	vector<Barrel*> barrels;
 	vector<Chest*> chests;

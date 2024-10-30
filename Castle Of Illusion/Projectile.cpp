@@ -48,6 +48,14 @@ void Projectile::shoot(const glm::ivec2 & pos, int dir) {
 	sprite->setPosition(pos);
 }
 
+void Projectile::Bshoot(const glm::ivec2& pos, int dir, int alpha) {
+	shot = true;
+	velocity.x = 1 * dir;
+	velocity.y = alpha;
+	position = pos;
+	sprite->setPosition(pos);
+}
+
 bool Projectile::isShot()
 {
 	return shot;

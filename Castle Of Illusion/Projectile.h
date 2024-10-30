@@ -8,6 +8,7 @@ public:
 	void update(int deltaTime);
 	void render();
 	void shoot(const glm::ivec2 &pos, int dir);
+	void Bshoot(const glm::ivec2& pos, int dir, int alpha);
 	bool isShot();
 
 private:

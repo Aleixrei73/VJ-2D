@@ -41,6 +41,7 @@ public:
 	bool playerInSurface();
 	bool isPicking();
 	void die() override;
+	bool isRight() const;
 
 	PlayerAction getAction();
 	

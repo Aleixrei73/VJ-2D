@@ -394,7 +394,7 @@ void Scene::updateInteractions(Player *player, Enemy *enemy, bool projectile) {
 		gui->setScore(gui->getScore() + 100);
 		glm::ivec2 hitPosition = glm::ivec2(player->getPosition().x, enemy->getPosition().y) - glm::ivec2(0, enemy->getHitBox().y);
 		player->setPosition(hitPosition);
-		player->setJump(-6);
+		player->setJump(-5);
 		enemy->die();
 	}
 }
@@ -408,7 +408,7 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 			interacting = true;
 			barrel->setState(THROWED);
 			int direction = player->getVelocity().x > 0 ? 1 : -1;
-			glm::vec2 newVelocity = glm::vec2(8*direction, -3);
+			glm::vec2 newVelocity = glm::vec2(6*direction, -3);
 			if (player->getVelocity().x == 0) {
 				newVelocity.y = 0;
 				newVelocity.x = 0;
@@ -421,12 +421,16 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 			barrel->setState(PICKED);
 			barrel->setVelocity(glm::vec2(0, 0));
 			player->setPicking(true);
+			glm::ivec2 newPosition = glm::ivec2(player->getPosition().x, player->getPosition().y - player->getHitBox().y);
+			barrel->setPosition(newPosition);
 		}
 
 	}
 
 	else if (barrel->getState() == PICKED) {
-		glm::ivec2 newPosition = glm::ivec2(player->getPosition().x, player->getPosition().y - player->getHitBox().y);
+		glm::ivec2 newPosition;
+		if (player->isRight()) newPosition = glm::ivec2(player->getPosition().x + player->getHitBox().x / 2 - 3, player->getPosition().y - player->getHitBox().y + player->getHitBox().y / 5);
+		else newPosition = glm::ivec2(player->getPosition().x + player->getHitBox().x / 4 - 5, player->getPosition().y - player->getHitBox().y + player->getHitBox().y / 5);
 		barrel->setPosition(newPosition);
 	}
 
@@ -456,7 +460,7 @@ void Scene::updateInteractions(Player * player, Chest * chest) {
 	if (player->getAction() == PlayerAction::ATTACKING && dir == UP) {
 		glm::ivec2 hitPosition = glm::ivec2(player->getPosition().x, chest->getPosition().y) - glm::ivec2(0, chest->getHitBox().y);
 		player->setPosition(hitPosition);
-		player->setJump(-7);
+		player->setJump(-5);
 		Consumable *item = chest->open();
 		item->init(glm::ivec2(SCREEN_X, SCREEN_Y), texProgram); 
 		item->setTileMap(map);
@@ -472,8 +476,7 @@ void Scene::updateInteractions(Player * player, Chest * chest) {
 		if (!player->playerInSurface())player->setStanding();
 		//We must check if player needs to jump since the player update will make it think it is in the air
 		if (Game::instance().getKey(GLFW_KEY_W)) {
-			player->setAction(PlayerAction::JUMPING);
-			player->setVerticalVelocity(-7.0);
+			player->setJump(-7);
 		}
 	}
 }
@@ -487,7 +490,7 @@ void Scene::updateInteractions(Player * player, Consumable * item) {
 			gui->setScore(gui->getScore() + 200);
 		}
 		else {
-			gui->setLives(min(4, gui->getLives()+1));
+			gui->setLives(min(3, gui->getLives()+1));
 		}
 		item->die();
 	}

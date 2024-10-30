@@ -399,7 +399,7 @@ void Player::render()
 }
 
 void Player::setJump(int vel) {
-	action = PlayerAction::JUMPING;
+	if (!(action==PlayerAction::ATTACKING))action = PlayerAction::JUMPING;
 	velocity.y = vel;
 }
 
@@ -439,6 +439,11 @@ bool Player::isPicking() {
 void Player::die() {
 	dying = true;
 	velocity.y = -7;
+}
+
+bool Player::isRight() const
+{
+	return sprite->animation()%2 == 0;
 }
 
 PlayerAction Player::getAction()

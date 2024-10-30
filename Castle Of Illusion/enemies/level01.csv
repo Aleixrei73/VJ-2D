@@ -1,5 +1,4 @@
 Barrel, 4, 6, 0,
-Item,4,3,Gem,
 Tree, 9, 5,
 Item,13,2,Points,
 Item,14,2,Points,
@@ -25,4 +24,5 @@ Flower,86,19,
 Flower,88,17,
 Flower,90,17,
 Flower,92,19,
+Item,89,16,Gem,
 END

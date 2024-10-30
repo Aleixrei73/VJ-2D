@@ -37,6 +37,7 @@ void Scene::init()
 	interactingGod = false;
 	height = 1;
 	hit = false;
+	passed = false;
 
 	initShaders();
 	map = TileMap::createTileMap("levels/"+level+".txt", glm::vec2(SCREEN_X, SCREEN_Y), texProgram);
@@ -46,8 +47,8 @@ void Scene::init()
 	background = new Background();
 	background->init(glm::ivec2(0, float(7 * map->getTileSize())), texProgram);
 
-	gui = new GUI();
-	gui->init(glm::ivec2(SCREEN_X, 10 * map->getTileSize()), texProgram, AMPLITUDE*2);
+	gui = &GUI::instance();
+	if (!gui->isInitialized()) gui->init(glm::ivec2(SCREEN_X, 10 * map->getTileSize()), texProgram, AMPLITUDE*2);
 	
 	initEntities();
 
@@ -184,6 +185,9 @@ void Scene::restart() {
 	if (gui->getTries() == 0) {
 		gui->setTries(3);
 		Game::instance().setScene(5);
+		Game::instance().startAgain();
+		gui->restart();
+		startPreparation();
 		return;
 	}
 	gui->setTries(gui->getTries() - 1);
@@ -227,6 +231,7 @@ void Scene::initEntities() {
 	player->setPosition(glm::vec2(INIT_PLAYER_X_TILES * map->getTileSize(), INIT_PLAYER_Y_TILES * map->getTileSize()));
 	player->setTileMap(map);
 	player->setEdgePointer(&playableEdge);
+	passed = false;
 
 	fstream fin;
 
@@ -298,9 +303,18 @@ void Scene::initEntities() {
 		}
 		else {
 			fin.close();
+			if (boss != nullptr) {
+				createItem(-1, -1, ConsumableType::GEM);
+			}
 			return;
 		}
 	}
+}
+
+void Scene::startPreparation() {
+
+	if (!gui->isInitialized()) gui->init(glm::ivec2(SCREEN_X, 10 * map->getTileSize()), texProgram, AMPLITUDE * 2);
+
 }
 
 void Scene::createEnemy(int posX, int posY) {
@@ -494,6 +508,7 @@ void Scene::updateInteractions(Player * player, Consumable * item) {
 			gui->setLives(min(3, gui->getLives()+1));
 		}
 		else {
+			passed = true;
 			Game::instance().nextLevel();
 		}
 		item->die();
@@ -523,6 +538,11 @@ void Scene::checkKillCollision(Barrel * barrel, Chest * target) {
 
 void Scene::update(int deltaTime) {
 
+	if (passed) {
+		passed = false;
+		restart();
+	}
+
 	currentTime += deltaTime;
 	if (interacting) interacting = Game::instance().getKey(GLFW_KEY_V);
 	if (interactingGod) interactingGod = Game::instance().getKey(GLFW_KEY_G);
@@ -546,6 +566,7 @@ void Scene::update(int deltaTime) {
 		boss->update(deltaTime);
 		if (!boss->isDying()) updateInteractions(player, boss, false);
 		checkShoots(player, boss);
+		if (boss->isDead()) items[items.size() - 1]->setPosition(glm::ivec2(9*map->getTileSize(), 3*map->getTileSize()));
 	}
 
 	for (Flor* flower : flowers) {
@@ -660,7 +681,13 @@ void Scene::render()
 	texProgram.setUniformMatrix4f("modelview", modelview);
 	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 
-	//background->render();
+	background->render();
+
+	texProgram.setUniformMatrix4f("projection", projection);
+	texProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
+	modelview = glm::mat4(1.0f);
+	texProgram.setUniformMatrix4f("modelview", modelview);
+	texProgram.setUniform2f("texCoordDispl", 0.f, 0.f);
 
 	map->render();
 

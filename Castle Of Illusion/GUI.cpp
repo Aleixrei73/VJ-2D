@@ -14,6 +14,7 @@ void GUI::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, int
 	amplitude = amp;
 	tileGap = amplitude / 4.f;
 	timeTimer = 0;
+	initialized = true;
 
 	//Texture initialitation
 
@@ -246,6 +247,35 @@ void GUI::setScore(int scr) {
 
 void GUI::setTimeLeft(int time) {
 	timeLeft = time;
+}
+
+bool GUI::isInitialized() {
+	return initialized;
+}
+
+void GUI::restart() {
+
+	initialized = false;
+	delete background;
+	for (int i = livesSprites.size() - 1; i > -1; --i) {
+		delete livesSprites[i];
+		livesSprites.pop_back();
+	}
+
+	for (int i = triesSprites.size() - 1; i > -1; --i) {
+		delete triesSprites[i];
+		triesSprites.pop_back();
+	}
+
+	for (int i = scoreSprites.size() - 1; i > -1; --i) {
+		delete scoreSprites[i];
+		scoreSprites.pop_back();
+	}
+
+	for (int i = timeSprites.size() - 1; i > -1; --i) {
+		delete timeSprites[i];
+		timeSprites.pop_back();
+	}
 }
 
 void GUI::createWord(string word, vector<Sprite*>& res, const glm::vec2 &pos, ShaderProgram & shaderProgram) {

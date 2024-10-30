@@ -12,7 +12,17 @@
 
 class GUI {
 
+private:
+	GUI() {}
+
 public:
+
+	static GUI& instance()
+	{
+		static GUI GUI;
+
+		return GUI;
+	}
 
 	void init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram, int amp);
 	void render();
@@ -27,6 +37,8 @@ public:
 	void setTries(int tri);
 	void setScore(int scr);
 	void setTimeLeft(int time);
+	bool isInitialized();
+	void restart();
 
 private:
 
@@ -45,4 +57,5 @@ private:
 	void createWord(string word, vector<Sprite*> &res, const glm::vec2 &pos, ShaderProgram & shaderProgram);
 	void createHearts(const glm::vec2 &pos, ShaderProgram & shaderProgram);
 	void createNumber(int num, int digitNumber, vector<Sprite*> &res, const glm::vec2 &pos, ShaderProgram & shaderProgram);
+	bool initialized = false;
 };

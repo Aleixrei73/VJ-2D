@@ -7,6 +7,7 @@
 #include "Inicio.h"
 #include "Creditos.h"
 #include "Instructions.h"
+#include "GUI.h"
 
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900
@@ -43,6 +44,7 @@ public:
 	bool getKey(int key) const;
 	void setScene(int scene);
 	void nextLevel();
+	void startAgain();
 
 private:
 	bool bPlay; // Continue to play game?

@@ -31,7 +31,7 @@ void Instructions::init()
 	int Space = 0;
 
 	livesSprites.push_back(createLetter('W', livesPos, texProgram));
-	livesSprites.push_back(createLetter('�', livesPos + glm::vec2(LETTER_GAP, 0), texProgram));
+	livesSprites.push_back(createLetter('=', livesPos + glm::vec2(LETTER_GAP, 0), texProgram));
 	livesSprites.push_back(createLetter('S', livesPos + glm::vec2(LETTER_GAP * 2, 0), texProgram));
 	livesSprites.push_back(createLetter('A', livesPos + glm::vec2(LETTER_GAP * 3, 0), texProgram));
 	livesSprites.push_back(createLetter('L', livesPos + glm::vec2(LETTER_GAP * 4, 0), texProgram));
@@ -42,7 +42,7 @@ void Instructions::init()
 	Space += 3;
 
 	livesSprites.push_back(createLetter('S', livesPos + glm::vec2(0, LETTER_GAP * Space), texProgram));
-	livesSprites.push_back(createLetter('�', livesPos + glm::vec2(LETTER_GAP, LETTER_GAP * Space), texProgram));
+	livesSprites.push_back(createLetter('=', livesPos + glm::vec2(LETTER_GAP, LETTER_GAP * Space), texProgram));
 	livesSprites.push_back(createLetter('C', livesPos + glm::vec2(LETTER_GAP * 2, LETTER_GAP * Space), texProgram));
 	livesSprites.push_back(createLetter('A', livesPos + glm::vec2(LETTER_GAP * 3, LETTER_GAP * Space), texProgram));
 	livesSprites.push_back(createLetter('U', livesPos + glm::vec2(LETTER_GAP * 4, LETTER_GAP * Space), texProgram));
@@ -52,7 +52,7 @@ void Instructions::init()
 	Space += 3;
 
 	livesSprites.push_back(createLetter('D', livesPos + glm::vec2(0, LETTER_GAP * Space), texProgram));
-	livesSprites.push_back(createLetter('�', livesPos + glm::vec2(LETTER_GAP, LETTER_GAP * Space), texProgram));
+	livesSprites.push_back(createLetter('=', livesPos + glm::vec2(LETTER_GAP, LETTER_GAP * Space), texProgram));
 	livesSprites.push_back(createLetter('D', livesPos + glm::vec2(LETTER_GAP * 2, LETTER_GAP * Space), texProgram));
 	livesSprites.push_back(createLetter('R', livesPos + glm::vec2(LETTER_GAP * 3, LETTER_GAP * Space), texProgram));
 	livesSprites.push_back(createLetter('E', livesPos + glm::vec2(LETTER_GAP * 4, LETTER_GAP * Space), texProgram));
@@ -62,7 +62,7 @@ void Instructions::init()
 	Space += 3;
 
 	livesSprites.push_back(createLetter('A', livesPos + glm::vec2(0, LETTER_GAP * Space), texProgram));
-	livesSprites.push_back(createLetter('�', livesPos + glm::vec2(LETTER_GAP, LETTER_GAP * Space), texProgram));
+	livesSprites.push_back(createLetter('=', livesPos + glm::vec2(LETTER_GAP, LETTER_GAP * Space), texProgram));
 	livesSprites.push_back(createLetter('E', livesPos + glm::vec2(LETTER_GAP * 2, LETTER_GAP * Space), texProgram));
 	livesSprites.push_back(createLetter('S', livesPos + glm::vec2(LETTER_GAP * 3, LETTER_GAP * Space), texProgram));
 	livesSprites.push_back(createLetter('Q', livesPos + glm::vec2(LETTER_GAP * 4, LETTER_GAP * Space), texProgram));
@@ -75,7 +75,7 @@ void Instructions::init()
 	Space += 3;
 
 	livesSprites.push_back(createLetter('V', livesPos + glm::vec2(0, LETTER_GAP * Space), texProgram));
-	livesSprites.push_back(createLetter('�', livesPos + glm::vec2(LETTER_GAP, LETTER_GAP * Space), texProgram));
+	livesSprites.push_back(createLetter('=', livesPos + glm::vec2(LETTER_GAP, LETTER_GAP * Space), texProgram));
 	livesSprites.push_back(createLetter('A', livesPos + glm::vec2(LETTER_GAP * 2, LETTER_GAP * Space), texProgram));
 	livesSprites.push_back(createLetter('G', livesPos + glm::vec2(LETTER_GAP * 3, LETTER_GAP * Space), texProgram));
 	livesSprites.push_back(createLetter('A', livesPos + glm::vec2(LETTER_GAP * 4, LETTER_GAP * Space), texProgram));
@@ -159,6 +159,7 @@ void Instructions::initShaders()
 
 Sprite* Instructions::createLetter(char letter, const glm::vec2& pos, ShaderProgram& shaderProgram) {
 	int letterNum = letter - 'A' + 15;
+	if (letter == '=') letterNum = 11;
 	int j = letterNum / 18 + 1;
 	int i = letterNum % 18;
 	Sprite* letterSprite = Sprite::createSprite(glm::ivec2(7, 9), glm::vec2(1 / 18.f, 1 / 6.f), &font, &shaderProgram);

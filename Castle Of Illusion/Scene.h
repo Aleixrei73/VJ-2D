@@ -34,6 +34,7 @@ public:
 	void setLevel(string lvl);
 	void update(int deltaTime);
 	void render();
+	void startPreparation();
 
 private:
 	void initShaders();
@@ -80,6 +81,7 @@ private:
 	bool interacting, god, interactingGod;
 	int playableEdge;
 	int height;
+	bool passed;
 
 };
 

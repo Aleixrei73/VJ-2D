@@ -67,7 +67,7 @@ void Game::keyPressed(int key)
 	if (key == GLFW_KEY_ESCAPE || escena == 3) // Escape code
 		bPlay = false;
 	keys[key] = true;
-	if (key == GLFW_KEY_N && escena == 0) level = (level + 1) % 3;
+	if (key == GLFW_KEY_N && escena == 0) nextLevel();
 	if (escena == 5) {
 		if (key == GLFW_KEY_W) {
 			if (pantalla > 0) pantalla--;
@@ -108,8 +108,20 @@ void Game::setScene(int scene) {
 
 void Game::nextLevel() {
 	level++;
+	GUI::instance().setTimeLeft(200);
 	if (level > 2) {
 		level = 0;
 		escena = 2;
+		level01.startPreparation();
 	}
+	else if (level == 1) {
+		level02.startPreparation();
+	}
+	else {
+		level03.startPreparation();
+	}
+}
+
+void Game::startAgain() {
+	level = 0;
 }

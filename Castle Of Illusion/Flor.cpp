@@ -72,8 +72,10 @@ void Flor::update(int deltaTime) {
 
 	int player_x = player->getPosition().x;
 	int flower_x = position.x;
+	int height = position.y / (7 * map->getTileSize());
+	int playerHeight = player->getPosition().y / (7 * map->getTileSize());
 
-	if (abs(player_x - flower_x) < 5 * map->getTileSize()) {
+	if (abs(player_x - flower_x) < 5 * map->getTileSize() && height == playerHeight) {
 		
 		currentTime += deltaTime;
 

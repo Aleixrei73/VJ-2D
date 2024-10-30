@@ -358,6 +358,7 @@ void Player::update(int deltaTime) {
 			}
 			 
 			else if(Game::instance().getKey(GLFW_KEY_W)) {
+				SoundManager::instance().playSound(SoundType::JUMP);
 				action = PlayerAction::JUMPING;
 				velocity.y = -7.5;
 

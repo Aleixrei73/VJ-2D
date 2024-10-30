@@ -94,6 +94,8 @@ void Barrel::update(int deltaTime) {
 
 		position.y += int(velocity.y);
 
+		if (position.y > *mapEdge) death = true;
+
 		if (map->collisionMoveDown(position, hitBox, &position.y)) {
 			velocity.y = 0;
 			velocity.x = 0;
@@ -101,8 +103,6 @@ void Barrel::update(int deltaTime) {
 				explode();
 			}
 		}
-
-		if (position.y > *mapEdge) death = true;
 
 	}
 
@@ -133,6 +133,7 @@ void Barrel::explode() {
 	sprite->changeAnimation(EXPLODE);
 	explodeTime = 0;
 	exploded = true;
+	SoundManager::instance().playSound(SoundType::BLOCK_BREAK);
 }
 
 bool Barrel::hasExploded() const

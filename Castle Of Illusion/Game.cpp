@@ -25,6 +25,8 @@ void Game::init()
 	instructions.init();
 	creditos.init();
 
+	SoundManager::instance().init();
+
 }
 
 bool Game::update(int deltaTime)

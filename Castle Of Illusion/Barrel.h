@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity.h"
+#include "SoundManager.h"
 
 enum State {PICKED, FREE, THROWED};
 

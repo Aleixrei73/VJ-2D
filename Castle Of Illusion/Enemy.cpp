@@ -100,6 +100,7 @@ void Enemy::die() {
 
 	dying = true;
 	velocity.y = -7;
+	SoundManager::instance().playSound(SoundType::KILL);
 }
 
 bool Enemy::isFlower()

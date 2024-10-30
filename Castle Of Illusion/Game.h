@@ -8,6 +8,7 @@
 #include "Creditos.h"
 #include "Instructions.h"
 #include "GUI.h"
+#include "SoundManager.h"
 
 #define SCREEN_WIDTH 1600
 #define SCREEN_HEIGHT 900

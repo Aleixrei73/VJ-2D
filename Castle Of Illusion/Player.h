@@ -2,6 +2,7 @@
 #define _PLAYER_INCLUDE
 
 #include "Entity.h"
+#include "SoundManager.h"
 
 
 // Player is basically a Sprite that represents the player. As such it has

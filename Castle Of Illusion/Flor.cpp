@@ -113,6 +113,7 @@ void Flor::die() {
 	sprite->changeAnimation(DIE);
 	dying = true;
 	velocity.y = -7;
+	SoundManager::instance().playSound(SoundType::KILL);
 }
 
 bool Flor::isFlower()

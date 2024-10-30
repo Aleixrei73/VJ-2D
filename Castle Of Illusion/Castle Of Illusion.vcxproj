@@ -75,11 +75,13 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <AdditionalIncludeDirectories>..\libs\Simple OpenGL Image Library\src;..\libs\glew-1.13.0\include;..\libs\glm;..\libs\glfw-3.3.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\libs\Simple OpenGL Image Library\src;..\libs\glew-1.13.0\include;..\libs\glm;..\libs\glfw-3.3.8\include;..\libs\SDL2-2.30.8\include;..\libs\SDL2_mixer-2.8.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>..\libs\Simple OpenGL Image Library\projects\VC9\Debug;..\libs\glew-1.13.0\lib\Release\Win32;..\libs\glfw-3.3.8\lib-vc2015;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SOIL.lib;glew32.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\libs\Simple OpenGL Image Library\projects\VC9\Debug;..\libs\glew-1.13.0\lib\Release\Win32;..\libs\glfw-3.3.8\lib-vc2015;..\libs\SDL2-2.30.8\lib\x86;..\libs\SDL2_mixer-2.8.0\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SOIL.lib;glew32.lib;glfw3.lib;opengl32.lib;SDL2.lib
+;SDL2main.lib;
+SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -135,6 +137,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TileMap.cpp" />
@@ -158,6 +161,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderProgram.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="TileMap.h" />

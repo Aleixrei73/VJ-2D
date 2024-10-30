@@ -382,6 +382,7 @@ void Scene::updateInteractions(Player *player, Enemy *enemy, bool projectile) {
 		gui->setLives(gui->getLives() - 1);
 		hit = true;
 		hitTime = 0;
+		SoundManager::instance().playSound(SoundType::HIT);
 
 		if (dir == LEFT) {
 			player->setHorizontalVelocity(-4);
@@ -405,7 +406,7 @@ void Scene::updateInteractions(Player *player, Enemy *enemy, bool projectile) {
 		}
 	}
 
-	if (player->getAction() == PlayerAction::ATTACKING && dir == UP) {
+	if (player->getAction() == PlayerAction::ATTACKING && dir == UP && !projectile) {
 		gui->setScore(gui->getScore() + 100);
 		glm::ivec2 hitPosition = glm::ivec2(player->getPosition().x, enemy->getPosition().y) - glm::ivec2(0, enemy->getHitBox().y);
 		player->setPosition(hitPosition);
@@ -430,6 +431,7 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 			}
 			barrel->setVelocity(newVelocity);
 			player->setPicking(false);
+			SoundManager::instance().playSound(SoundType::THROW);
 		}
 		else if (!player->isPicking() && barrel->getState() == FREE && dir != NONE) {
 			interacting = true;
@@ -462,6 +464,7 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 		if (!player->playerInSurface())player->setStanding();
 		//We must check if player needs to jump since the player update will make it think it is in the air
 		if (Game::instance().getKey(GLFW_KEY_W)) {
+			SoundManager::instance().playSound(SoundType::JUMP);
 			player->setAction(PlayerAction::JUMPING);
 			player->setVerticalVelocity(-7.0);
 		}
@@ -482,6 +485,7 @@ void Scene::updateInteractions(Player * player, Chest * chest) {
 		item->drop(chest->getPosition());
 		items.push_back(item);
 		chest->die();
+		SoundManager::instance().playSound(SoundType::BLOCK_BREAK);
 	}
 
 	else if (dir == UP) {
@@ -491,6 +495,7 @@ void Scene::updateInteractions(Player * player, Chest * chest) {
 		if (!player->playerInSurface())player->setStanding();
 		//We must check if player needs to jump since the player update will make it think it is in the air
 		if (Game::instance().getKey(GLFW_KEY_W)) {
+			SoundManager::instance().playSound(SoundType::JUMP);
 			player->setJump(-7);
 		}
 	}
@@ -503,6 +508,7 @@ void Scene::updateInteractions(Player * player, Consumable * item) {
 	if (dir != NONE && item->getVelocity().y >= 0) {
 		if (item->getType() == ConsumableType::POINTS) {
 			gui->setScore(gui->getScore() + 200);
+			SoundManager::instance().playSound(SoundType::COIN);
 		}
 		else if (item->getType() == ConsumableType::LIFE) {
 			gui->setLives(min(3, gui->getLives()+1));
@@ -520,7 +526,9 @@ void Scene::checkKillCollision(Barrel * barrel, Enemy * target) {
 	if (dir != NONE) {
 		target->die();
 		gui->setScore(gui->getScore() + 100);
-		if (barrel->isExplosive()) barrel->explode();
+		if (barrel->isExplosive()) {
+			barrel->explode();
+		}
 	}
 }
 
@@ -533,6 +541,7 @@ void Scene::checkKillCollision(Barrel * barrel, Chest * target) {
 		item->drop(target->getPosition());
 		items.push_back(item);
 		target->die();
+		SoundManager::instance().playSound(SoundType::BLOCK_BREAK);
 	}
 }
 
@@ -609,7 +618,9 @@ void Scene::update(int deltaTime) {
 			if (barrels[i]->getState() == THROWED && !barrels[i]->hasExploded() && barrels[j]->isExplosive()) {
 				Direction dir = isCollision(barrels[i], barrels[j]);
 				if (dir != NONE) {
-					if (barrels[i]->isExplosive()) barrels[i]->explode();
+					if (barrels[i]->isExplosive()) {
+						barrels[i]->explode();
+					}
 					barrels[j]->explode();
 				}
 			}

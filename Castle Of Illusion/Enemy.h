@@ -2,6 +2,7 @@
 #define _ENEMY_INCLUDE
 
 #include "Entity.h"
+#include "SoundManager.h"
 
 class Enemy : public Entity
 {

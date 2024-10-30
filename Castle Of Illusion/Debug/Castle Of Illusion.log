@@ -1,17 +1,46 @@
-﻿  Scene.cpp
+﻿  TileMap.cpp
+  Texture.cpp
+  Sprite.cpp
+  SoundManager.cpp
+  ShaderProgram.cpp
+  Shader.cpp
+  Scene.cpp
 c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\scene.cpp(96): warning C4244: 'inicializando': conversión de 'int' a 'float'; posible pérdida de datos
 c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\scene.cpp(103): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
 c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\scene.cpp(121): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
-c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\scene.cpp(457): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
-c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\scene.cpp(607): warning C4018: '<': no coinciden signed/unsigned
-c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\scene.cpp(608): warning C4018: '<': no coinciden signed/unsigned
-  Generando código...
-  Omitiendo... (no se detectaron cambios relevantes)
-  main.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\scene.cpp(459): warning C4244: 'argumento': conversión de 'double' a 'int'; posible pérdida de datos
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\scene.cpp(616): warning C4018: '<': no coinciden signed/unsigned
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\scene.cpp(617): warning C4018: '<': no coinciden signed/unsigned
+  Projectile.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\projectile.cpp(45): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\projectile.cpp(53): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\projectile.cpp(54): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
   Player.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\player.cpp(69): warning C4553: '==': el operador no tiene efecto; ¿ha pensado en '='?
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\player.cpp(404): warning C4244: '=': conversión de 'int' a 'float'; posible pérdida de datos
+  Barrel.cpp
+  main.cpp
   Instructions.cpp
   Inicio.cpp
+  GUI.cpp
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\gui.cpp(34): warning C4244: '=': conversión de 'const int' a 'float'; posible pérdida de datos
+c:\users\aleix\onedrive\escritorio\uni\vj\vj-2d\castle of illusion\gui.cpp(35): warning C4244: '=': conversión de 'const int' a 'float'; posible pérdida de datos
   Game.cpp
+  Flor.cpp
+  Entity.cpp
+  Enemy.cpp
   Creditos.cpp
+  Consumable.cpp
+  Generando código...
+  Compilando...
+  Chest.cpp
+  Boss.cpp
+  Background.cpp
+  Generando código...
+LINK : warning LNK4098: la biblioteca predeterminada'MSVCRT' entra en conflicto con otras bibliotecas; use la biblioteca /NODEFAULTLIB:biblioteca
+SOIL.lib(image_DXT.obj) : warning LNK4099: no se encontró PDB 'vc100.pdb' con 'SOIL.lib(image_DXT.obj)' o en 'C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\VJ-2D\Debug\vc100.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
+SOIL.lib(image_helper.obj) : warning LNK4099: no se encontró PDB 'vc100.pdb' con 'SOIL.lib(image_helper.obj)' o en 'C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\VJ-2D\Debug\vc100.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
+SOIL.lib(SOIL.obj) : warning LNK4099: no se encontró PDB 'vc100.pdb' con 'SOIL.lib(SOIL.obj)' o en 'C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\VJ-2D\Debug\vc100.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
+SOIL.lib(stb_image_aug.obj) : warning LNK4099: no se encontró PDB 'vc100.pdb' con 'SOIL.lib(stb_image_aug.obj)' o en 'C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\VJ-2D\Debug\vc100.pdb'; se vinculará el objeto sin tener en cuenta información de depuración
   Castle Of Illusion.vcxproj -> C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\VJ-2D\Debug\Castle Of Illusion.exe
   Castle Of Illusion.vcxproj -> C:\Users\aleix\OneDrive\Escritorio\Uni\VJ\VJ-2D\Debug\Castle Of Illusion.pdb (Partial PDB)

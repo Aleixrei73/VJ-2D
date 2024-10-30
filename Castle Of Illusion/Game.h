@@ -42,6 +42,7 @@ public:
 
 	bool getKey(int key) const;
 	void setScene(int scene);
+	void nextLevel();
 
 private:
 	bool bPlay; // Continue to play game?

@@ -285,7 +285,8 @@ void Scene::initEntities() {
 			getline(s, word, ',');
 			ConsumableType type;
 			if (word == "Life") type = ConsumableType::LIFE;
-			else type = ConsumableType::POINTS;
+			else if (word == "Points") type = ConsumableType::POINTS;
+			else type = ConsumableType::GEM;
 			createItem(posX, posY, type);
 		}
 		else if (word == "Boss") {
@@ -489,8 +490,11 @@ void Scene::updateInteractions(Player * player, Consumable * item) {
 		if (item->getType() == ConsumableType::POINTS) {
 			gui->setScore(gui->getScore() + 200);
 		}
-		else {
+		else if (item->getType() == ConsumableType::LIFE) {
 			gui->setLives(min(3, gui->getLives()+1));
+		}
+		else {
+			Game::instance().nextLevel();
 		}
 		item->die();
 	}

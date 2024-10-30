@@ -105,3 +105,11 @@ bool Game::getKey(int key) const
 void Game::setScene(int scene) {
 	escena = scene;
 }
+
+void Game::nextLevel() {
+	level++;
+	if (level > 2) {
+		level = 0;
+		escena = 2;
+	}
+}

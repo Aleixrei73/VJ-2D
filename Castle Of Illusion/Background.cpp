@@ -18,3 +18,7 @@ void Background::init(const glm::ivec2 &tileMapPos, ShaderProgram &shaderProgram
 void Background::render() {
 	sprite->render();
 }
+
+void Background::setPosition(const glm::ivec2 & pos) {
+	sprite->setPosition(pos);
+}

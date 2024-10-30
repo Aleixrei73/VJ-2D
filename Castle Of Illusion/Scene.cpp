@@ -75,8 +75,7 @@ Direction Scene::isCollision(Entity *player, Entity *enemy) {
 	if (posPlayer.y >= enemyTopHitBox && playerTopHitBox <= posEnemy.y) {
 
 		if (player->getVelocity().y >= 0 && posPlayer.y <= (enemyTopHitBox + 10)) {
-			if ((posPlayer.x <= enemyRightBorder && enemyRightBorder <= playerRightBorder) ||
-				((posPlayer.x <= posEnemy.x && posEnemy.x <= playerRightBorder))) return UP;
+			if (posPlayer.x <= enemyRightBorder && posEnemy.x <= playerRightBorder) return UP;
 		}
 
 		if (playerRightBorder >= posEnemy.x && playerRightBorder <= enemyRightBorder) return LEFT;
@@ -305,6 +304,7 @@ void Scene::initEntities() {
 			fin.close();
 			if (boss != nullptr) {
 				createItem(-1, -1, ConsumableType::GEM);
+				background->setPosition(glm::ivec2(0, 7*map->getTileSize()));
 			}
 			return;
 		}

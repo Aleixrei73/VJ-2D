@@ -433,6 +433,12 @@ void Scene::updateInteractions(Player * player, Barrel * barrel) {
 	else if (dir == UP && barrel->getState() == FREE) {
 		glm::ivec2 newPosition = glm::ivec2(player->getPosition().x, barrel->getPosition().y - barrel->getHitBox().y);
 		player->setPosition(newPosition);
+		if (barrel->isExplosive() && player->getAction() == PlayerAction::ATTACKING) {
+			player->setPosition(newPosition);
+			player->setJump(-5);
+			barrel->explode();
+			return;
+		}
 		player->setAction(PlayerAction::GROUNDED);
 		if (!player->playerInSurface())player->setStanding();
 		//We must check if player needs to jump since the player update will make it think it is in the air
@@ -487,11 +493,12 @@ void Scene::updateInteractions(Player * player, Consumable * item) {
 	}
 }
 
-void Scene::checkKillCollision(Entity * killer, Entity * target) {
-	Direction dir = isCollision(killer, target);
+void Scene::checkKillCollision(Barrel * barrel, Entity * target) {
+	Direction dir = isCollision(barrel, target);
 	if (dir != NONE) {
 		target->die();
 		gui->setScore(gui->getScore() + 100);
+		if (barrel->isExplosive()) barrel->explode();
 	}
 }
 
@@ -530,7 +537,7 @@ void Scene::update(int deltaTime) {
 
 	for (Barrel* barrel : barrels) {
 		barrel->update(deltaTime);
-		updateInteractions(player, barrel);
+		if (!barrel->hasExploded())updateInteractions(player, barrel);
 	}
 
 	for (Consumable* item : items) {
@@ -548,6 +555,18 @@ void Scene::update(int deltaTime) {
 	for (Enemy* enemy : enemies) {
 		for (Barrel* barrel : barrels) {
 			if (barrel->getState() == THROWED && !enemy->isDying()) checkKillCollision(barrel, enemy);
+		}
+	}
+
+	for (int i = 0; i < barrels.size(); i++) {
+		for (int j = i+1; j < barrels.size(); j++) {
+			if (barrels[i]->getState() == THROWED && !barrels[i]->hasExploded() && barrels[j]->isExplosive()) {
+				Direction dir = isCollision(barrels[i], barrels[j]);
+				if (dir != NONE) {
+					if (barrels[i]->isExplosive()) barrels[i]->explode();
+					barrels[j]->explode();
+				}
+			}
 		}
 	}
 

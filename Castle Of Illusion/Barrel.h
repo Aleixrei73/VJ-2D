@@ -14,11 +14,15 @@ public:
 	void render();
 	void setState(State st);
 	State getState();
+	bool isExplosive() const;
+	void explode();
+	bool hasExploded() const;
 
 private:
-	void explode();
+	
 	bool explosive;
 	bool exploded;
 	State state;
+	int explodeTime;
 
 };

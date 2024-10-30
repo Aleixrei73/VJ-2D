@@ -4,7 +4,7 @@
 
 enum BarrelAnims
 {
-	STAND_LEFT, STAND_RIGHT, MOVE_LEFT, MOVE_RIGHT
+	STAND, EXPLODE
 };
 
 Barrel::~Barrel() {
@@ -13,12 +13,20 @@ Barrel::~Barrel() {
 
 void Barrel::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, bool expl) {
 
-	spritesheet.loadFromFile("images/barrilete.png", TEXTURE_PIXEL_FORMAT_RGBA);
-	sprite = Sprite::createSprite(glm::ivec2(32, 32), glm::vec2(1, 1), &spritesheet, &shaderProgram);
-	sprite->setNumberAnimations(1);
+	spritesheet.loadFromFile("images/prueba_objects.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	sprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(1/11.f, 1/3.f), &spritesheet, &shaderProgram);
+	sprite->setNumberAnimations(2);
 
-	sprite->setAnimationSpeed(STAND_LEFT, 8);
-	sprite->addKeyframe(STAND_LEFT, glm::vec2(0.f, 0.f));
+	float sprite_gap = 1 / 11.f;
+
+	sprite->setAnimationSpeed(STAND, 8);
+	if (!expl) sprite->addKeyframe(STAND, glm::vec2(0.f, 1/3.f));
+	else sprite->addKeyframe(STAND, glm::vec2(2*sprite_gap, 0.f));
+
+	sprite->setAnimationSpeed(EXPLODE, 11);
+	for (int i = 0; i < 11; i++) {
+		sprite->addKeyframe(EXPLODE, glm::vec2(i*sprite_gap, 2/3.f));
+	}
 
 	sprite->changeAnimation(0);
 	tileMapDispl = tileMapPos;
@@ -27,14 +35,23 @@ void Barrel::init(const glm::ivec2 & tileMapPos, ShaderProgram & shaderProgram, 
 	sprite->setPosition(glm::vec2(float(tileMapDispl.x + position.x), float(tileMapDispl.y + position.y)));
 	acceleration = glm::vec2(0, 0.2);
 	velocity = glm::vec2(0, 0);
-	hitBox = glm::ivec2(32, 32);
+	hitBox = glm::ivec2(16, 16);
 	state = FREE;
 
 }
 
 void Barrel::update(int deltaTime) {
 
-	if (state == PICKED) return;
+	if (exploded) {
+		sprite->update(deltaTime);
+		explodeTime += deltaTime;
+		if (explodeTime > 1000) {
+			death = true;
+		}
+		return;
+	}
+
+	if (state == PICKED || state == FREE) return;
 
 	if (velocity.x > 0) {
 		velocity.x -= acceleration.x * deltaTime/10;
@@ -45,6 +62,9 @@ void Barrel::update(int deltaTime) {
 		if (map->collisionMoveRight(position, hitBox)) {
 			position.x -= int(velocity.x);
 			velocity.x = 0;
+			if (explosive) {
+				explode();
+			}
 		}
 	}
 
@@ -59,6 +79,9 @@ void Barrel::update(int deltaTime) {
 		if (map->collisionMoveLeft(position, hitBox)) {
 			position.x -= int(velocity.x);
 			velocity.x = 0;
+			if (explosive) {
+				explode();
+			}
 		}
 
 	}
@@ -74,9 +97,8 @@ void Barrel::update(int deltaTime) {
 		if (map->collisionMoveDown(position, hitBox, &position.y)) {
 			velocity.y = 0;
 			velocity.x = 0;
-			if (explosive && (state == THROWED)) {
+			if (explosive) {
 				explode();
-				exploded = true;
 			}
 		}
 
@@ -102,6 +124,18 @@ State Barrel::getState() {
 	return state;
 }
 
-void Barrel::explode() {
+bool Barrel::isExplosive() const
+{
+	return explosive;
+}
 
+void Barrel::explode() {
+	sprite->changeAnimation(EXPLODE);
+	explodeTime = 0;
+	exploded = true;
+}
+
+bool Barrel::hasExploded() const
+{
+	return exploded;
 }
